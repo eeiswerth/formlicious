@@ -25,6 +25,10 @@
 				{{#if inputType}}
 					{{> formliciousInputField}}
 				{{else}}
+					{{#if textareaType}}
+						{{> formliciousTextareaField}}
+					{{else}}
+					{{/if}}
 				{{/if}}
 			</div>
 		{{/each}}
@@ -33,5 +37,11 @@
 
 <template name="formliciousInputField">
 	<label for="{{id}}" class="control-label">{{name}}</label>
-	<input type="text" class="form-control" id="{{id}}" placeholder="{{placeholder}}">
+	<input type="text" class="form-control" id="{{id}}" placeholder="{{placeholder}}" maxlength="{{maxlength}}">
+</template>
+
+<template name="formliciousTextareaField">
+	<label for="{{id}}" class="control-label">{{name}}</label>
+	<textarea class="form-control" id="{{id}}" rows="{{rows}}" maxlength="{{maxlength}}"></textarea>
+	<div class="pull-right textarea-counter">{{maxlength}}</div>
 </template>
