@@ -1,0 +1,37 @@
+<template name="formlicious">
+	{{#if vertical}}
+		{{> formliciousVerticalLayout}}
+	{{else}}
+		{{> formliciousHorizontalLayout}}
+	{{/if}}
+</template>
+
+<template name="formliciousVerticalLayout">
+	<form>
+		{{> formliciousFields}}
+	</form>
+</template>
+
+<template name="formliciousHorizontalLayout">
+	<form class="form-horizontal">
+		{{> formliciousFields}}
+	</form>
+</template>
+
+<template name="formliciousFields">
+	<div>
+		{{#each options.fields}}
+			<div class="form-group">
+				{{#if inputType}}
+					{{> formliciousInputField}}
+				{{else}}
+				{{/if}}
+			</div>
+		{{/each}}
+	</div>
+</template>
+
+<template name="formliciousInputField">
+	<label for="{{id}}" class="control-label">{{name}}</label>
+	<input type="text" class="form-control" id="{{id}}" placeholder="{{placeholder}}">
+</template>
