@@ -15,7 +15,8 @@ Package.onUse(function(api) {
   api.use(['templating']);
   api.addFiles([
       'formlicious.html',
-      'formlicious.js'], 'client');
+      'formlicious.js',
+      'lib/utils.js'], 'client');
 });
 
 Package.onTest(function(api) {

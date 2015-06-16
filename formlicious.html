@@ -1,19 +1,5 @@
 <template name="formlicious">
-	{{#if vertical}}
-		{{> formliciousVerticalLayout}}
-	{{else}}
-		{{> formliciousHorizontalLayout}}
-	{{/if}}
-</template>
-
-<template name="formliciousVerticalLayout">
-	<form>
-		{{> formliciousFields}}
-	</form>
-</template>
-
-<template name="formliciousHorizontalLayout">
-	<form class="form-horizontal">
+	<form class="formlicious {{#unless vertical}}form-horizontal{{/unless}}" id="{{formId}}">
 		{{> formliciousFields}}
 	</form>
 </template>
@@ -43,5 +29,8 @@
 <template name="formliciousTextareaField">
 	<label for="{{id}}" class="control-label">{{name}}</label>
 	<textarea class="form-control" id="{{id}}" rows="{{rows}}" maxlength="{{maxlength}}"></textarea>
-	<div class="pull-right textarea-counter">{{maxlength}}</div>
+	{{#if maxlength}}
+		<div class="pull-right textarea-counter">{{maxlength}}</div>
+	{{/if}}
 </template>
+

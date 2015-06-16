@@ -1,3 +1,5 @@
+var formId;
+
 var updateTextareaCounter = function(tmpl) {
     var textareaElem = $(tmpl.find('textarea'));
     var counterElement = textareaElem.siblings('.textarea-counter');
@@ -13,6 +15,12 @@ var updateTextareaCounter = function(tmpl) {
     counterElement.html(allowedChars);
 };
 
+Template.formlicious.onCreated(function() {
+    formId = FormliciousUtils.getCount();
+});
+
+Template.formlicious.onDestroyed(function() {
+});
 
 Template.formlicious.helpers({
     vertical: function() {
@@ -25,6 +33,9 @@ Template.formlicious.helpers({
             throw new Error('Invalid orientation: "' + this.options.orientation + '"');
         }
         return isVertical;
+    },
+    formId: function() {
+        return 'formliciousForm_' + formId;
     }
 });
 
@@ -42,4 +53,3 @@ Template.formliciousTextareaField.events({
         updateTextareaCounter(tmpl);
     }
 });
-
