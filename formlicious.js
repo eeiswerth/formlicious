@@ -39,7 +39,39 @@ var getControlClasses = function() {
     return classes;
 };
 
+var validateControl = function(controlElement, field) {
+    var input = controlElement.val();
+    if (field.validator != null && !$.isFunction(field.validator)) {
+        throw new Error('Field validator must be a function.');
+    }
+    var validator = field.validator;
+    if (field.required) {
+        if (field.validator == null) {
+            // If field is required, but no validator is specified, then we default to non-empty validator.
+            validator = Formlicious.validators.nonEmptyValidator;
+        }
+    }
+
+    var valid = true;
+    if (validator != null) {
+        // run the validator;
+        var controlElementParent = controlElement.closest('.form-group');
+
+        // Clear error state.
+        controlElementParent.removeClass('has-error');
+
+        valid = validator(field, input);
+        if (!valid) {
+            controlElementParent.addClass('has-error');
+        }
+    }
+    return valid;
+};
+
 Template.formlicious.onCreated(function() {
+    if (!this.data.options) {
+        return;
+    }
     var options = this.data.options;
     var isVertical = !options.orientation || options.orientation === 'vertical';
     var isHorizontal = options.orientation === 'horizontal';
@@ -81,6 +113,12 @@ Template.formliciousInputField.helpers({
     }
 });
 
+Template.formliciousInputField.events({
+    'input input': function(e, tmpl) {
+        validateControl($(e.currentTarget), this);
+    }
+});
+
 Template.formliciousTextareaField.helpers({
     titleClasses: function() {
         return getTitleClasses.call(this);
@@ -93,5 +131,6 @@ Template.formliciousTextareaField.helpers({
 Template.formliciousTextareaField.events({
     'input textarea': function(e, tmpl) {
         updateTextareaCounter($(e.currentTarget));
+        validateControl($(e.currentTarget), this);
     }
 });

@@ -16,7 +16,10 @@ Package.onUse(function(api) {
   api.addFiles([
       'formlicious.html',
       'formlicious.js',
-      'lib/utils.js'], 'client');
+      'lib/utils.js',
+      'lib/exports.js'], 'client');
+
+  api.export('Formlicious');
 });
 
 Package.onTest(function(api) {
