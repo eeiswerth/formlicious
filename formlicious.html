@@ -22,15 +22,19 @@
 </template>
 
 <template name="formliciousInputField">
-	<label for="{{id}}" class="control-label">{{name}}</label>
-	<input type="text" class="form-control" id="{{id}}" placeholder="{{placeholder}}" maxlength="{{maxlength}}">
+	<label for="{{id}}" class="{{titleClasses}} control-label">{{title}}</label>
+	<div class="{{controlClasses}}">
+		<input type="text" class="form-control" id="{{id}}" placeholder="{{placeholder}}" maxlength="{{maxlength}}">
+	</div>
 </template>
 
 <template name="formliciousTextareaField">
-	<label for="{{id}}" class="control-label">{{name}}</label>
-	<textarea class="form-control" id="{{id}}" rows="{{rows}}" maxlength="{{maxlength}}"></textarea>
-	{{#if maxlength}}
-		<div class="pull-right textarea-counter">{{maxlength}}</div>
-	{{/if}}
+	<label for="{{id}}" class="{{titleClasses}} control-label">{{title}}</label>
+	<div class="{{controlClasses}}">
+		<textarea class="form-control" id="{{id}}" rows="{{rows}}" maxlength="{{maxlength}}"></textarea>
+		{{#if maxlength}}
+			<div class="pull-right textarea-counter">{{maxlength}}</div>
+		{{/if}}
+	</div>
 </template>
 
