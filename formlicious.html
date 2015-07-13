@@ -1,6 +1,7 @@
 <template name="formlicious">
 	<form class="formlicious {{#unless vertical}}form-horizontal{{/unless}}" id="{{formId}}">
 		{{> formliciousFields}}
+		{{> formliciousButtons}}
 	</form>
 </template>
 
@@ -14,6 +15,9 @@
 					{{#if textareaType}}
 						{{> formliciousTextareaField}}
 					{{else}}
+						{{#if dateType}}
+							{{> formliciousDateInputField}}
+						{{/if}}
 					{{/if}}
 				{{/if}}
 			</div>
@@ -38,3 +42,21 @@
 	</div>
 </template>
 
+<template name="formliciousDateInputField">
+	<label for="{{id}}" class="{{titleClasses}} control-label">{{title}}</label>
+	<div class="{{controlClasses}}">
+		<input type="text" class="form-control formlicious-date-input" id="{{id}}" placeholder="{{placeholder}}" maxlength="{{maxlength}}">
+	</div>
+</template>
+
+<template name="formliciousButtons">
+	<div class="formlicious-button-group">
+		{{#each options.buttons}}
+			{{> formliciousButton}}
+		{{/each}}
+	</div>
+</template>
+
+<template name="formliciousButton">
+	<button class="btn {{classes}}" type="{{type}}">{{text}}</button>
+</template>

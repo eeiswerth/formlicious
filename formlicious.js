@@ -16,11 +16,9 @@ var updateTextareaCounter = function(textareaElem) {
 };
 
 var getTitleClasses = function() {
-    var classes = '';
+    var classes = this.titleClasses;
     if (!_vertical) {
-        if (this.titleClasses) {
-            classes = this.titleClasses;
-        } else {
+        if (!classes) {
             classes = 'col-sm-2';
         }
     }
@@ -28,19 +26,27 @@ var getTitleClasses = function() {
 };
 
 var getControlClasses = function() {
-    var classes = '';
+    var classes = this.controlClasses;
     if (!_vertical) {
-        if (this.controlClasses) {
-            classes = this.controlClasses;
-        } else {
+        if (!classes) {
             classes = 'col-sm-10';
         }
     }
     return classes;
 };
 
+var getFieldValue = function(controlElement, field) {
+  if (field.type === 'input' || field.type === 'textarea') {
+      return controlElement.val();
+  } else if (field.type === 'date') {
+      return controlElement.datepicker('getDate');
+  } else {
+      throw new Error('Field type not supported: ' + field.type);
+  }
+};
+
 var validateControl = function(controlElement, field) {
-    var input = controlElement.val();
+    var value = getFieldValue(controlElement, field);
     if (field.validator != null && !$.isFunction(field.validator)) {
         throw new Error('Field validator must be a function.');
     }
@@ -60,7 +66,7 @@ var validateControl = function(controlElement, field) {
         // Clear error state.
         controlElementParent.removeClass('has-error');
 
-        valid = validator(field, input);
+        valid = validator(field, value);
         if (!valid) {
             controlElementParent.addClass('has-error');
         }
@@ -101,6 +107,9 @@ Template.formliciousFields.helpers({
     },
     textareaType: function() {
         return this.type === 'textarea';
+    },
+    dateType: function() {
+        return this.type === 'date';
     }
 });
 
@@ -133,4 +142,27 @@ Template.formliciousTextareaField.events({
         updateTextareaCounter($(e.currentTarget));
         validateControl($(e.currentTarget), this);
     }
+});
+
+Template.formliciousDateInputField.onRendered(function() {
+    var dateInput = $(this.find('.formlicious-date-input'));
+    dateInput.datepicker({
+        startView: 2
+    });
+});
+
+Template.formliciousDateInputField.events({
+    'change input': function(e, tmpl) {
+        validateControl($(e.currentTarget), this);
+    }
+});
+
+Template.formliciousButton.helpers({
+   type: function() {
+       var type = 'button';
+       if (this.type) {
+           type = this.type;
+       }
+       return type;
+   }
 });
