@@ -18,6 +18,7 @@ Package.onUse(function(api) {
   api.addFiles([
       'formlicious.html',
       'formlicious.js',
+      'formlicious.css',
       'lib/utils.js',
       'lib/exports.js'], 'client');
 

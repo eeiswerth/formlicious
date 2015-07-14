@@ -17,6 +17,14 @@
 					{{else}}
 						{{#if dateType}}
 							{{> formliciousDateInputField}}
+						{{else}}
+							{{#if ccExpirationType}}
+								{{> formliciousCCExpirationField}}
+							{{else}}
+								{{#if ccType}}
+									{{> formliciousCCInputField}}
+								{{/if}}
+							{{/if}}
 						{{/if}}
 					{{/if}}
 				{{/if}}
@@ -46,6 +54,30 @@
 	<label for="{{id}}" class="{{titleClasses}} control-label">{{title}}</label>
 	<div class="{{controlClasses}}">
 		<input type="text" class="form-control formlicious-date-input" id="{{id}}" placeholder="{{placeholder}}" maxlength="{{maxlength}}">
+	</div>
+</template>
+
+<template name="formliciousCCInputField">
+	<label for="{{id}}" class="{{titleClasses}} control-label">{{title}}</label>
+	<div class="{{controlClasses}}">
+		<input type="text" class="form-control" id="{{id}}" placeholder="{{placeholder}}" maxlength="20">
+	</div>
+</template>
+
+<template name="formliciousCCExpirationField">
+	<label for="{{id}}" class="{{titleClasses}} control-label">{{title}}</label>
+	<div class="formlicious-cc-expiration {{controlClasses}}">
+		<select class="form-control">
+			{{#each months}}
+				<option value="{{this}}">{{this}}</option>
+			{{/each}}
+		</select>
+		<span> / </span>
+		<select class="form-control">
+			{{#each years}}
+				<option value="{{this}}">{{this}}</option>
+			{{/each}}
+		</select>
 	</div>
 </template>
 

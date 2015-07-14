@@ -36,7 +36,7 @@ var getControlClasses = function() {
 };
 
 var getFieldValue = function(controlElement, field) {
-  if (field.type === 'input' || field.type === 'textarea') {
+  if (field.type === 'input' || field.type === 'textarea' || field.type === 'credit-card') {
       return controlElement.val();
   } else if (field.type === 'date') {
       return controlElement.datepicker('getDate');
@@ -110,6 +110,12 @@ Template.formliciousFields.helpers({
     },
     dateType: function() {
         return this.type === 'date';
+    },
+    ccType: function() {
+        return this.type === 'credit-card';
+    },
+    ccExpirationType: function() {
+        return this.type === 'credit-card-expiration';
     }
 });
 
@@ -155,6 +161,36 @@ Template.formliciousDateInputField.events({
     'change input': function(e, tmpl) {
         validateControl($(e.currentTarget), this);
     }
+});
+
+Template.formliciousCCInputField.events({
+    'input input': function(e, tmpl) {
+        validateControl($(e.currentTarget), this);
+    }
+});
+
+Template.formliciousCCExpirationField.helpers({
+   months: function() {
+       var months = [];
+       months.push('');
+       for (var i = 1; i <= 12; ++i) {
+           if (i < 10) {
+               months.push('0' + i);
+           } else {
+               months.push('' + i);
+           }
+       }
+       return months;
+   },
+   years: function() {
+       var years = [];
+       years.push('');
+       var currentYear = new Date().getFullYear();
+       for (var i = currentYear + 20; i >= currentYear; --i) {
+           years.push(i);
+       }
+       return years;
+   }
 });
 
 Template.formliciousButton.helpers({

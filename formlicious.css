@@ -1,0 +1,11 @@
+.formlicious-cc-expiration select {
+    display: inline-block;
+}
+
+.formlicious-cc-expiration select:first-child {
+    width: 50px;
+}
+
+.formlicious-cc-expiration select:last-child {
+    width: 80px;
+}
