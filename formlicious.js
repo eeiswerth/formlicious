@@ -1,6 +1,21 @@
 var _options;
 var _formId;
 var _vertical = true;
+var _api;
+
+var FormliciousAPI = function(options) {
+    this.options = options;
+};
+
+FormliciousAPI.prototype._execFunc = function(func) {
+    $.each(this.options.fields, function(i, field) {
+        field[func]();
+    });
+};
+
+FormliciousAPI.prototype.reset = function() {
+    this._execFunc('reset');
+};
 
 var updateTextareaCounter = function(textareaElem) {
     var counterElement = textareaElem.siblings('.textarea-counter');
@@ -66,14 +81,23 @@ var validateControl = function(controlElement, field) {
 };
 
 var validateAllControls = function() {
-    var valid = true;
+    var result = {
+        valid: true,
+        fields: []
+    };
     $.each(_options.fields, function(i, field) {
+        var fieldValid = true;
         if (!validateControl(field.controlElement, field)) {
-            valid = false;
+            result.valid = false;
+            fieldValid = false;
             // Don't break out of loop. We want to continue validating all controls.
         }
+        result.fields.push({
+            name: field.name,
+            valid: fieldValid
+        });
     });
-    return valid;
+    return result;
 };
 
 var getFormData = function() {
@@ -103,9 +127,9 @@ var handleButtonClick = function(button) {
         return;
     }
 
-    var valid = validateAllControls();
+    var result = validateAllControls();
     var data = getFormData();
-    button.callback(valid, data);
+    button.callback(_api, result, data);
 };
 
 var getFieldData = function(field) {
@@ -160,6 +184,7 @@ Template.formlicious.onCreated(function() {
 
     _vertical = isVertical;
     _formId = FormliciousUtils.getCount();
+    _api = new FormliciousAPI(_options);
 });
 
 Template.formlicious.onDestroyed(function() {
@@ -211,6 +236,9 @@ Template.formliciousInputField.onRendered(function() {
     this.data.setData = function(value) {
         this.controlElement.val(value);
     };
+    this.data.reset = function() {
+        this.controlElement.val('');
+    };
 
     var data = getFieldData(this.data);
     this.data.setData(data);
@@ -238,6 +266,9 @@ Template.formliciousTextareaField.onRendered(function() {
     };
     this.data.setData = function(value) {
         this.controlElement.val(value);
+    };
+    this.data.reset = function() {
+        this.controlElement.val('');
     };
 
     var data = getFieldData(this.data);
@@ -268,6 +299,10 @@ Template.formliciousDateInputField.onRendered(function() {
     this.data.setData = function(value) {
         this.controlElement.datepicker('setDate', value);
     };
+    this.data.reset = function() {
+        this.controlElement.datepicker('setDate', null);
+    };
+
     var dateInput = this.data.controlElement;
     dateInput.datepicker({
         startView: 2
@@ -291,6 +326,9 @@ Template.formliciousCCInputField.onRendered(function() {
     this.data.setData = function(value) {
         this.controlElement.val(value);
     };
+    this.data.reset = function() {
+        this.controlElement.val('');
+    }
 
     var data = getFieldData(this.data);
     this.data.setData(data);
@@ -325,6 +363,13 @@ Template.formliciousCCExpirationField.onRendered(function() {
         if (value.year) {
             yearsSelectElement.val(value.year);
         }
+    };
+
+    this.data.reset = function() {
+        var monthsSelectElement = this.controlElement.find('.formlicious-cc-months');
+        var yearsSelectElement = this.controlElement.find('.formlicious-cc-years');
+        monthsSelectElement.val('');
+        yearsSelectElement.val('');
     };
 
     var data = getFieldData(this.data);
