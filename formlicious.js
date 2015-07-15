@@ -108,6 +108,13 @@ var handleButtonClick = function(button) {
     button.callback(valid, data);
 };
 
+var getFieldData = function(field) {
+    if (!_options.data) {
+        return null;
+    }
+    return _options.data[field.name];
+};
+
 Template.formlicious.onCreated(function() {
     if (!this.data.options) {
         return;
@@ -200,7 +207,13 @@ Template.formliciousInputField.onRendered(function() {
     this.data.controlElement = $(this.find('input'));
     this.data.getData = function() {
         return $.trim(this.controlElement.val());
-    }
+    };
+    this.data.setData = function(value) {
+        this.controlElement.val(value);
+    };
+
+    var data = getFieldData(this.data);
+    this.data.setData(data);
 });
 
 Template.formliciousInputField.helpers({
@@ -222,7 +235,13 @@ Template.formliciousTextareaField.onRendered(function() {
     this.data.controlElement = $(this.find('textarea'));
     this.data.getData = function() {
         return $.trim(this.controlElement.val());
-    }
+    };
+    this.data.setData = function(value) {
+        this.controlElement.val(value);
+    };
+
+    var data = getFieldData(this.data);
+    this.data.setData(data);
 });
 
 Template.formliciousTextareaField.helpers({
@@ -245,11 +264,17 @@ Template.formliciousDateInputField.onRendered(function() {
     this.data.controlElement = $(this.find('.formlicious-date-input'));
     this.data.getData = function() {
         return this.controlElement.datepicker('getDate');
-    }
+    };
+    this.data.setData = function(value) {
+        this.controlElement.datepicker('setDate', value);
+    };
     var dateInput = this.data.controlElement;
     dateInput.datepicker({
         startView: 2
     });
+
+    var data = getFieldData(this.data);
+    this.data.setData(data);
 });
 
 Template.formliciousDateInputField.events({
@@ -262,7 +287,13 @@ Template.formliciousCCInputField.onRendered(function() {
     this.data.controlElement = $(this.find('input'));
     this.data.getData = function() {
         return $.trim(this.controlElement.val());
-    }
+    };
+    this.data.setData = function(value) {
+        this.controlElement.val(value);
+    };
+
+    var data = getFieldData(this.data);
+    this.data.setData(data);
 });
 
 Template.formliciousCCInputField.events({
@@ -281,18 +312,34 @@ Template.formliciousCCExpirationField.onRendered(function() {
             month: parseInt(monthsSelectElement.val(), 10),
             year: parseInt(yearsSelectElement.val(), 10)
         };
-    }
+    };
+    this.data.setData = function(value) {
+        if (!value) {
+            return;
+        }
+        var monthsSelectElement = this.controlElement.find('.formlicious-cc-months');
+        var yearsSelectElement = this.controlElement.find('.formlicious-cc-years');
+        if (value.month) {
+            monthsSelectElement.val(value.month);
+        }
+        if (value.year) {
+            yearsSelectElement.val(value.year);
+        }
+    };
+
+    var data = getFieldData(this.data);
+    this.data.setData(data);
 });
 
 Template.formliciousCCExpirationField.helpers({
    months: function() {
        var months = [];
-       months.push('');
+       months.push({value : '', display: ''});
        for (var i = 1; i <= 12; ++i) {
            if (i < 10) {
-               months.push('0' + i);
+               months.push({value: i, display: '0' + i});
            } else {
-               months.push('' + i);
+               months.push({value: i, display: '' + i});
            }
        }
        return months;
