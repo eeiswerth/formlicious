@@ -1,3 +1,11 @@
+.formlicious-date-input {
+    width: 150px;
+}
+
+.formlicious-cc-input {
+    width: 250px;
+}
+
 .formlicious-cc-expiration select {
     display: inline-block;
 }

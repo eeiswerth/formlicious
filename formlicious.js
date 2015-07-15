@@ -36,23 +36,8 @@ var getControlClasses = function() {
     return classes;
 };
 
-var getFieldValue = function(controlElement, field) {
-  if (field.type === 'input' || field.type === 'textarea' || field.type === 'credit-card') {
-      return controlElement.val();
-  } else if (field.type === 'date') {
-      return controlElement.datepicker('getDate');
-  } else if (field.type === 'credit-card-expiration') {
-      var monthsSelectElement = controlElement.find('.formlicious-cc-months');
-      var yearsSelectElement = controlElement.find('.formlicious-cc-years');
-
-      return {month: monthsSelectElement.val(), year: yearsSelectElement.val()};
-  } else {
-      throw new Error('Field type not supported: ' + field.type);
-  }
-};
-
 var validateControl = function(controlElement, field) {
-    var value = getFieldValue(controlElement, field);
+    var value = field.getData();
     if (field.validator != null && !$.isFunction(field.validator)) {
         throw new Error('Field validator must be a function.');
     }
@@ -91,6 +76,16 @@ var validateAllControls = function() {
     return valid;
 };
 
+var getFormData = function() {
+    var data = {};
+    $.each(_options.fields, function(i, field) {
+        if ($.isFunction(field.getData)) {
+            data[field.name] = field.getData();
+        }
+    });
+    return data;
+};
+
 var getSubmitButton = function() {
     var button = null;
     $.each(this.options.buttons, function(i, b) {
@@ -109,6 +104,8 @@ var handleButtonClick = function(button) {
     }
 
     var valid = validateAllControls();
+    var data = getFormData();
+    button.callback(valid, data);
 };
 
 Template.formlicious.onCreated(function() {
@@ -201,6 +198,9 @@ Template.formliciousFields.helpers({
 
 Template.formliciousInputField.onRendered(function() {
     this.data.controlElement = $(this.find('input'));
+    this.data.getData = function() {
+        return $.trim(this.controlElement.val());
+    }
 });
 
 Template.formliciousInputField.helpers({
@@ -220,6 +220,9 @@ Template.formliciousInputField.events({
 
 Template.formliciousTextareaField.onRendered(function() {
     this.data.controlElement = $(this.find('textarea'));
+    this.data.getData = function() {
+        return $.trim(this.controlElement.val());
+    }
 });
 
 Template.formliciousTextareaField.helpers({
@@ -239,11 +242,10 @@ Template.formliciousTextareaField.events({
 });
 
 Template.formliciousDateInputField.onRendered(function() {
-    this.data.controlElement = $(this.find('textarea'));
-});
-
-Template.formliciousDateInputField.onRendered(function() {
     this.data.controlElement = $(this.find('.formlicious-date-input'));
+    this.data.getData = function() {
+        return this.controlElement.datepicker('getDate');
+    }
     var dateInput = this.data.controlElement;
     dateInput.datepicker({
         startView: 2
@@ -258,6 +260,9 @@ Template.formliciousDateInputField.events({
 
 Template.formliciousCCInputField.onRendered(function() {
     this.data.controlElement = $(this.find('input'));
+    this.data.getData = function() {
+        return $.trim(this.controlElement.val());
+    }
 });
 
 Template.formliciousCCInputField.events({
@@ -268,6 +273,15 @@ Template.formliciousCCInputField.events({
 
 Template.formliciousCCExpirationField.onRendered(function() {
     this.data.controlElement = $(this.find('.formlicious-cc-expiration'));
+    this.data.getData = function() {
+        var monthsSelectElement = this.controlElement.find('.formlicious-cc-months');
+        var yearsSelectElement = this.controlElement.find('.formlicious-cc-years');
+
+        return {
+            month: parseInt(monthsSelectElement.val(), 10),
+            year: parseInt(yearsSelectElement.val(), 10)
+        };
+    }
 });
 
 Template.formliciousCCExpirationField.helpers({
