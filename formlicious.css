@@ -17,3 +17,7 @@
 .formlicious-cc-expiration select:last-child {
     width: 90px;
 }
+
+.formlicious-checkbox {
+    margin-top: 0px;
+}

@@ -23,6 +23,14 @@
 							{{else}}
 								{{#if ccType}}
 									{{> formliciousCCInputField}}
+								{{else}}
+									{{#if checkboxType}}
+										{{> formliciousCheckboxField}}
+									{{else}}
+										{{#if checkboxGroupType}}
+											{{> formliciousCheckboxGroupField}}
+										{{/if}}
+									{{/if}}
 								{{/if}}
 							{{/if}}
 						{{/if}}
@@ -78,6 +86,28 @@
 				<option value="{{this}}">{{this}}</option>
 			{{/each}}
 		</select>
+	</div>
+</template>
+
+<template name="formliciousCheckboxField">
+	<label for="{{id}}" class="{{titleClasses}} control-label">{{title}}</label>
+	<div class="checkbox formlicious-checkbox">
+		<label>
+			<input id="{{id}}" type="checkbox"> {{text}}
+		</label>
+	</div>
+</template>
+
+<template name="formliciousCheckboxGroupField">
+	<label for="{{id}}" class="{{titleClasses}} control-label">{{title}}</label>
+	<div class="formlicious-checkbox-group">
+		{{#each fields}}
+			<div class="checkbox formlicious-checkbox">
+				<label>
+					<input id="{{id}}" type="checkbox"> {{text}}
+				</label>
+			</div>
+		{{/each}}
 	</div>
 </template>
 

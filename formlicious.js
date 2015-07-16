@@ -249,11 +249,16 @@ Template.formliciousFields.helpers({
     },
     ccExpirationType: function() {
         return this.type === 'credit-card-expiration';
+    },
+    checkboxType: function() {
+        return this.type === 'checkbox';
+    },
+    checkboxGroupType: function() {
+        return this.type === 'checkbox-group';
     }
 });
 
 Template.formliciousInputField.onRendered(function() {
-    var self = this;
     this.data.controlElement = $(this.find('input'));
     this.data.getData = function() {
         return $.trim(this.controlElement.val());
@@ -262,10 +267,10 @@ Template.formliciousInputField.onRendered(function() {
         this.controlElement.val(value);
     };
     this.data.reset = function() {
-        this.controlElement.val('');
+        this.setData('');
     };
     this.data.validate = function() {
-        return validateControl(self.data.controlElement, self.data);
+        return validateControl(this.controlElement, this);
     };
 
     var data = getFieldData(this.data);
@@ -288,7 +293,6 @@ Template.formliciousInputField.events({
 });
 
 Template.formliciousTextareaField.onRendered(function() {
-    var self = this;
     this.data.controlElement = $(this.find('textarea'));
     this.data.getData = function() {
         return $.trim(this.controlElement.val());
@@ -297,10 +301,10 @@ Template.formliciousTextareaField.onRendered(function() {
         this.controlElement.val(value);
     };
     this.data.reset = function() {
-        this.controlElement.val('');
+        this.setData('');
     };
     this.data.validate = function() {
-        return validateControl(self.data.controlElement, self.data);
+        return validateControl(this.controlElement, this);
     };
 
     var data = getFieldData(this.data);
@@ -324,7 +328,6 @@ Template.formliciousTextareaField.events({
 });
 
 Template.formliciousDateInputField.onRendered(function() {
-    var self = this;
     this.data.controlElement = $(this.find('.formlicious-date-input'));
     this.data.getData = function() {
         return this.controlElement.datepicker('getDate');
@@ -333,10 +336,10 @@ Template.formliciousDateInputField.onRendered(function() {
         this.controlElement.datepicker('setDate', value);
     };
     this.data.reset = function() {
-        this.controlElement.datepicker('setDate', null);
+        this.setData(null);
     };
     this.data.validate = function() {
-        return validateControl(self.data.controlElement, self.data);
+        return validateControl(this.controlElement, this);
     };
 
     var dateInput = this.data.controlElement;
@@ -355,7 +358,6 @@ Template.formliciousDateInputField.events({
 });
 
 Template.formliciousCCInputField.onRendered(function() {
-    var self = this;
     this.data.controlElement = $(this.find('input'));
     this.data.getData = function() {
         return $.trim(this.controlElement.val());
@@ -364,10 +366,10 @@ Template.formliciousCCInputField.onRendered(function() {
         this.controlElement.val(value);
     };
     this.data.reset = function() {
-        this.controlElement.val('');
+        this.setData('');
     };
     this.data.validate = function() {
-        return validateControl(self.data.controlElement, self.data);
+        return validateControl(this.controlElement, this);
     };
 
     var data = getFieldData(this.data);
@@ -381,7 +383,6 @@ Template.formliciousCCInputField.events({
 });
 
 Template.formliciousCCExpirationField.onRendered(function() {
-    var self = this;
     this.data.controlElement = $(this.find('.formlicious-cc-expiration'));
     this.data.getData = function() {
         var monthsSelectElement = this.controlElement.find('.formlicious-cc-months');
@@ -398,22 +399,19 @@ Template.formliciousCCExpirationField.onRendered(function() {
         }
         var monthsSelectElement = this.controlElement.find('.formlicious-cc-months');
         var yearsSelectElement = this.controlElement.find('.formlicious-cc-years');
-        if (value.month) {
+        if (value.month != null) {
             monthsSelectElement.val(value.month);
         }
-        if (value.year) {
+        if (value.year != null) {
             yearsSelectElement.val(value.year);
         }
     };
 
     this.data.reset = function() {
-        var monthsSelectElement = this.controlElement.find('.formlicious-cc-months');
-        var yearsSelectElement = this.controlElement.find('.formlicious-cc-years');
-        monthsSelectElement.val('');
-        yearsSelectElement.val('');
+        this.setData({month: '', year: ''});
     };
     this.data.validate = function() {
-        return validateControl(self.data.controlElement.parent(), self.data);
+        return validateControl(this.controlElement.parent(), this);
     };
 
     var data = getFieldData(this.data);
@@ -451,6 +449,54 @@ Template.formliciousCCExpirationField.events({
     'change select.formlicious-cc-years': function(e, tmpl) {
         validateControl($(e.currentTarget).parent(), this);
     }
+});
+
+Template.formliciousCheckboxField.onRendered(function() {
+    this.data.controlElement = $(this.find('input'));
+    this.data.getData = function() {
+        return this.controlElement.prop("checked");
+    };
+    this.data.setData = function(value) {
+        return this.controlElement.prop("checked", value);
+    };
+    this.data.reset = function() {
+        this.setData(false);
+    };
+    this.data.validate = function() {
+        return validateControl(this.controlElement, this);
+    };
+
+    var data = getFieldData(this.data);
+    this.data.setData(data);
+});
+
+Template.formliciousCheckboxGroupField.onRendered(function() {
+    this.data.controlElement = $(this.find('.formlicious-checkbox-group'));
+    this.data.getData = function() {
+        var values = [];
+        $.each(this.controlElement.find('.formlicious-checkbox input'), function(i, checkboxElement) {
+            values.push($(checkboxElement).prop("checked"));
+        });
+        return values;
+    };
+    this.data.setData = function(values) {
+        $.each(this.controlElement.find('.formlicious-checkbox input'), function(i, checkboxElement) {
+            var value = false;
+            if (values && values[i] !== undefined) {
+                value = values[i];
+            }
+            $(checkboxElement).prop("checked", value);
+        });
+    };
+    this.data.reset = function() {
+        this.setData(null);
+    };
+    this.data.validate = function() {
+        return validateControl(this.controlElement, this);
+    };
+
+    var data = getFieldData(this.data);
+    this.data.setData(data);
 });
 
 Template.formliciousButton.helpers({
