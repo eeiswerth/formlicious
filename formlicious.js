@@ -163,6 +163,54 @@ var getFieldData = function(field) {
     return _options.data[field.name];
 };
 
+var initCheckboxAndRadioInput = function() {
+    this.data.controlElement = $(this.find('input'));
+    this.data.getData = function() {
+        return this.controlElement.prop("checked");
+    };
+    this.data.setData = function(value) {
+        return this.controlElement.prop("checked", value);
+    };
+    this.data.reset = function() {
+        this.setData(false);
+    };
+    this.data.validate = function() {
+        return validateControl(this.controlElement, this);
+    };
+
+    var data = getFieldData(this.data);
+    this.data.setData(data);
+};
+
+var initCheckboxAndRadioGroupInputs = function(selector, parentSelector) {
+    this.data.controlElement = $(this.find(parentSelector));
+    this.data.getData = function() {
+        var values = [];
+        $.each(this.controlElement.find(selector + ' input'), function(i, checkboxElement) {
+            values.push($(checkboxElement).prop("checked"));
+        });
+        return values;
+    };
+    this.data.setData = function(values) {
+        $.each(this.controlElement.find(selector + ' input'), function(i, checkboxElement) {
+            var value = false;
+            if (values && values[i] !== undefined) {
+                value = values[i];
+            }
+            $(checkboxElement).prop("checked", value);
+        });
+    };
+    this.data.reset = function() {
+        this.setData(null);
+    };
+    this.data.validate = function() {
+        return validateControl(this.controlElement, this);
+    };
+
+    var data = getFieldData(this.data);
+    this.data.setData(data);
+};
+
 Template.formlicious.onCreated(function() {
     if (!this.data.options) {
         return;
@@ -255,6 +303,12 @@ Template.formliciousFields.helpers({
     },
     checkboxGroupType: function() {
         return this.type === 'checkbox-group';
+    },
+    radioType: function() {
+        return this.type === 'radio';
+    },
+    radioGroupType: function() {
+        return this.type === 'radio-group';
     }
 });
 
@@ -452,51 +506,19 @@ Template.formliciousCCExpirationField.events({
 });
 
 Template.formliciousCheckboxField.onRendered(function() {
-    this.data.controlElement = $(this.find('input'));
-    this.data.getData = function() {
-        return this.controlElement.prop("checked");
-    };
-    this.data.setData = function(value) {
-        return this.controlElement.prop("checked", value);
-    };
-    this.data.reset = function() {
-        this.setData(false);
-    };
-    this.data.validate = function() {
-        return validateControl(this.controlElement, this);
-    };
-
-    var data = getFieldData(this.data);
-    this.data.setData(data);
+    initCheckboxAndRadioInput.call(this);
 });
 
 Template.formliciousCheckboxGroupField.onRendered(function() {
-    this.data.controlElement = $(this.find('.formlicious-checkbox-group'));
-    this.data.getData = function() {
-        var values = [];
-        $.each(this.controlElement.find('.formlicious-checkbox input'), function(i, checkboxElement) {
-            values.push($(checkboxElement).prop("checked"));
-        });
-        return values;
-    };
-    this.data.setData = function(values) {
-        $.each(this.controlElement.find('.formlicious-checkbox input'), function(i, checkboxElement) {
-            var value = false;
-            if (values && values[i] !== undefined) {
-                value = values[i];
-            }
-            $(checkboxElement).prop("checked", value);
-        });
-    };
-    this.data.reset = function() {
-        this.setData(null);
-    };
-    this.data.validate = function() {
-        return validateControl(this.controlElement, this);
-    };
+    initCheckboxAndRadioGroupInputs.call(this, '.formlicious-checkbox', '.formlicious-checkbox-group');
+});
 
-    var data = getFieldData(this.data);
-    this.data.setData(data);
+Template.formliciousRadioButtonField.onRendered(function() {
+    initCheckboxAndRadioInput.call(this);
+});
+
+Template.formliciousRadioButtonGroupField.onRendered(function() {
+    initCheckboxAndRadioGroupInputs.call(this, '.formlicious-radio', '.formlicious-radio-group');
 });
 
 Template.formliciousButton.helpers({

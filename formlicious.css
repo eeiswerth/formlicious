@@ -18,6 +18,7 @@
     width: 90px;
 }
 
-.formlicious-checkbox {
+.radio.formlicious-radio,
+.checkbox.formlicious-checkbox {
     margin-top: 0px;
 }

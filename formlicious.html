@@ -29,6 +29,14 @@
 									{{else}}
 										{{#if checkboxGroupType}}
 											{{> formliciousCheckboxGroupField}}
+										{{else}}
+											{{#if radioType}}
+												{{> formliciousRadioButtonField}}
+											{{else}}
+												{{#if radioGroupType}}
+													{{> formliciousRadioButtonGroupField}}
+				 								{{/if}}
+											{{/if}}
 										{{/if}}
 									{{/if}}
 								{{/if}}
@@ -105,6 +113,28 @@
 			<div class="checkbox formlicious-checkbox">
 				<label>
 					<input id="{{id}}" type="checkbox"> {{text}}
+				</label>
+			</div>
+		{{/each}}
+	</div>
+</template>
+
+<template name="formliciousRadioButtonField">
+	<label for="{{id}}" class="{{titleClasses}} control-label">{{title}}</label>
+	<div class="radio formlicious-radio">
+		<label>
+			<input id="{{id}}" type="radio"> {{text}}
+		</label>
+	</div>
+</template>
+
+<template name="formliciousRadioButtonGroupField">
+	<label for="{{id}}" class="{{titleClasses}} control-label">{{title}}</label>
+	<div class="formlicious-radio-group">
+		{{#each fields}}
+			<div class="radio formlicious-radio">
+				<label>
+					<input id="{{id}}" type="radio" name="{{..name}}" value="{{index}}"> {{text}}
 				</label>
 			</div>
 		{{/each}}
