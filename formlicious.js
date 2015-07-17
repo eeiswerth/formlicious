@@ -399,6 +399,7 @@ Template.formliciousTextareaField.onRendered(function() {
     };
     this.data.setData = function(value) {
         this.controlElement.val(value);
+        updateTextareaCounter(this.controlElement);
     };
     this.data.reset = function() {
         this.setData('');
