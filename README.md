@@ -2,6 +2,11 @@
 
 #### Simple Bootstrap forms for Meteor
 
+Currently formlicious is no more than a prototype. I haven't written tests yet.  But a demo application that uses the
+package can be found here: [meteor-formlicious-demo] (https://github.com/eeiswerth/meteor-formlicious-demo)
+
+#### Better documentation coming soon.
+
 HTML:
 ```
 <template name="myForm">

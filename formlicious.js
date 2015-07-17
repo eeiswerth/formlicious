@@ -7,10 +7,16 @@ var FormliciousAPI = function(options) {
     this.options = options;
 };
 
-FormliciousAPI.prototype._execFunc = function(func) {
+FormliciousAPI.prototype._execFunc = function(func, buttons) {
     $.each(this.options.fields, function(i, field) {
         field[func]();
     });
+
+    if (buttons) {
+        $.each(this.options.buttons, function(i, button) {
+            button[func]();
+        });
+    }
 };
 
 /**
@@ -43,6 +49,20 @@ FormliciousAPI.prototype.validate = function() {
         });
     });
     return result;
+};
+
+/**
+ * Disables all the form elements and buttons.
+ */
+FormliciousAPI.prototype.disable = function() {
+    this._execFunc('disable', true);
+};
+
+/**
+ * Enables all the form elements and buttons.
+ */
+FormliciousAPI.prototype.enable = function() {
+    this._execFunc('enable', false);
 };
 
 /**
@@ -152,6 +172,9 @@ var handleButtonClick = function(button) {
     }
 
     var result = _api.validate();
+    if (result && button.disableOnClick) {
+        _api.disable();
+    }
     var data = getFormData();
     button.callback(_api, result, data);
 };
@@ -176,6 +199,12 @@ var initCheckboxAndRadioInput = function() {
     };
     this.data.validate = function() {
         return validateControl(this.controlElement, this);
+    };
+    this.data.disable = function() {
+        this.controlElement.prop("disabled", true);
+    };
+    this.data.enable = function() {
+        this.controlElement.prop("disabled", false);
     };
 
     var data = getFieldData(this.data);
@@ -205,6 +234,17 @@ var initCheckboxAndRadioGroupInputs = function(selector, parentSelector) {
     };
     this.data.validate = function() {
         return validateControl(this.controlElement, this);
+    };
+    this.data._toggleDisabled = function(disabled) {
+        $.each(this.controlElement.find(selector + ' input'), function(i, checkboxElement) {
+            $(checkboxElement).prop("disabled", disabled);
+        });
+    };
+    this.data.disable = function() {
+        this._toggleDisabled(true);
+    };
+    this.data.enable = function() {
+        this._toggleDisabled(false);
     };
 
     var data = getFieldData(this.data);
@@ -326,6 +366,12 @@ Template.formliciousInputField.onRendered(function() {
     this.data.validate = function() {
         return validateControl(this.controlElement, this);
     };
+    this.data.disable = function() {
+        this.controlElement.prop("disabled", true);
+    };
+    this.data.enable = function() {
+        this.controlElement.prop("disabled", false);
+    };
 
     var data = getFieldData(this.data);
     this.data.setData(data);
@@ -359,6 +405,12 @@ Template.formliciousTextareaField.onRendered(function() {
     };
     this.data.validate = function() {
         return validateControl(this.controlElement, this);
+    };
+    this.data.disable = function() {
+        this.controlElement.prop("disabled", true);
+    };
+    this.data.enable = function() {
+        this.controlElement.prop("disabled", false);
     };
 
     var data = getFieldData(this.data);
@@ -395,6 +447,12 @@ Template.formliciousDateInputField.onRendered(function() {
     this.data.validate = function() {
         return validateControl(this.controlElement, this);
     };
+    this.data.disable = function() {
+        this.controlElement.prop("disabled", true);
+    };
+    this.data.enable = function() {
+        this.controlElement.prop("disabled", false);
+    };
 
     var dateInput = this.data.controlElement;
     dateInput.datepicker({
@@ -424,6 +482,12 @@ Template.formliciousCCInputField.onRendered(function() {
     };
     this.data.validate = function() {
         return validateControl(this.controlElement, this);
+    };
+    this.data.disable = function() {
+        this.controlElement.prop("disabled", true);
+    };
+    this.data.enable = function() {
+        this.controlElement.prop("disabled", false);
     };
 
     var data = getFieldData(this.data);
@@ -466,6 +530,18 @@ Template.formliciousCCExpirationField.onRendered(function() {
     };
     this.data.validate = function() {
         return validateControl(this.controlElement.parent(), this);
+    };
+    this.data._toggleDisabled = function(disabled) {
+        var monthsSelectElement = this.controlElement.find('.formlicious-cc-months');
+        var yearsSelectElement = this.controlElement.find('.formlicious-cc-years');
+        monthsSelectElement.prop("disabled", disabled);
+        yearsSelectElement.prop("disabled", disabled);
+    };
+    this.data.disable = function() {
+        this._toggleDisabled(true);
+    };
+    this.data.enable = function() {
+        this._toggleDisabled(false);
     };
 
     var data = getFieldData(this.data);
@@ -519,6 +595,16 @@ Template.formliciousRadioButtonField.onRendered(function() {
 
 Template.formliciousRadioButtonGroupField.onRendered(function() {
     initCheckboxAndRadioGroupInputs.call(this, '.formlicious-radio', '.formlicious-radio-group');
+});
+
+Template.formliciousButton.onRendered(function() {
+    this.data.controlElement =  $(this.find('button'));
+    this.data.disable = function() {
+        this.controlElement.prop("disabled", true);
+    };
+    this.data.enable = function() {
+        this.controlElement.prop("disabled", false);
+    };
 });
 
 Template.formliciousButton.helpers({
