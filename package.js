@@ -2,7 +2,7 @@ Package.describe({
   name: 'eeiswerth:formlicious',
   version: '0.0.1',
   // Brief, one-line summary of the package.
-  summary: '',
+  summary: 'Simple Bootstrap forms for Meteor',
   // URL to the Git repository containing the source code for this package.
   git: 'https://github.com/eeiswerth/meteor-formlicious.git',
   // By default, Meteor will default to using README.md for documentation.
