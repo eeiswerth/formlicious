@@ -1,11 +1,11 @@
 # formlicious
 
-#### Simple Bootstrap forms for Meteor
+### Simple Bootstrap forms for Meteor
 
 Currently formlicious is no more than a prototype. I haven't written tests yet.  But a demo application that uses the
 package can be found here: [meteor-formlicious-demo] (https://github.com/eeiswerth/meteor-formlicious-demo)
 
-#### Configuration Options
+### Configuration Options
 
 `fields`: Array - **required** The array of form element objects the controls what form elements are rendered. See below.
 `buttons`: Array - (recommended) The array of button objects that allow you to handle use interaction with the form.
@@ -14,7 +14,7 @@ package can be found here: [meteor-formlicious-demo] (https://github.com/eeiswer
 `orientation`: String - (optional) [vertical | horizontal] Controls how the form lays out.  Will the labels appear
                above the input element or inline. Default is "vertical".
 
-##### field
+#### Field
 Controls the form input elements that get rendered.
 
 `name`: String - **required** The name of the field. This will NOT be visible in the UI. This property is used for
@@ -34,7 +34,8 @@ checkbox-group         | A stack of vertical checkboxes.
 radio                  | A single radio button with a label to the right of the radio button.
 radio-group            | A stack of vertical radio buttons.
 
-        For more detail on the types and what options affect their presentation and data binding. See below.
+For more detail on the types and what options affect their presentation and data binding. See below.
+
 `title`: String - (recommended) The text that is displayed along with the form element. See the demo.
 `required`: Boolean - (optional) Set this to true to force validation on the field. If not validator is provided, the
             default is to validate that the input is not empty.
@@ -51,15 +52,15 @@ radio-group            | A stack of vertical radio buttons.
 
              Formlicious provides some validators for your convenience. See below for more details.
 
-##### button
+#### button
 
-#### Types
+### Types
 Under construction
 
-#### Validators
+### Validators
 Under construction
 
-#### Example
+### Example
 
 HTML:
 ```
