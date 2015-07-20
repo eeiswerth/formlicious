@@ -90,13 +90,29 @@ function (api, valid, data) {
 `classes`: String - (optional) CSS classes that will be applied to the button.  The default is "btn-default", but any style will work.  Typically the Bootstrap styles are used (i.e., btn-danger, btn-primary, btn-info, etc...).
 
 ### Validators
-Under construction
+
+All validators expect to be passed the field object and the input data. For example,
+
+```
+function myValidator(field, input) {
+   // Validate the input against the field.
+   return true;
+}
+```
+
+`Formlicious.validators.nonEmptyValidator`: Ensures the input is not empty.
+
+`Formlicious.validators.stringValidator`: Ensures the input is valid as per the field config object. Specifically, if maxlength was provided, this will validate it.
+
+`Formlicious.validators.creditCardValidator`: Validates the credit card number using the Luhn algorithm.
+
+`Formlicious.validators.creditCardExpirationValidator`: Validates the the year and month are valid.
 
 ### FormliciousAPI
 The API instance that allows you to programmatically control the form.
 
 #### Properties
-`options`: Essentially this is the configuration option that was passed to the formlicious template.  This instance has been augmented such that methods exist on each field instance that expose and API for each field. This provides individual API control for enabling, disabling, resetting, getting data, and setting data programmatically for individual fields.
+`options`: Essentially this is the configuration option that was passed to the formlicious template.  This instance has been augmented such that methods exist on each field instance that expose an API for each field. This provides individual API control for enabling, disabling, resetting, getting data, and setting data programmatically for individual fields.
 
 ##### Option fields
 Each field in the options object has been augmented to expose an API on the individual fields:
