@@ -8,19 +8,23 @@ package can be found here: [meteor-formlicious-demo] (https://github.com/eeiswer
 ### Configuration Options
 
 `fields`: Array - **required** The array of form element objects the controls what form elements are rendered. See below.
+
 `buttons`: Array - (recommended) The array of button objects that allow you to handle use interaction with the form.
+
 `data`: Object - (optional) If provided, must contain property names that bind to the name property in the field objects
-        that are provided via the fields property. See field definitions below for more detail.
-`orientation`: String - (optional) [vertical | horizontal] Controls how the form lays out.  Will the labels appear
-               above the input element or inline. Default is "vertical".
+that are provided via the fields property. See field definitions below for more detail.
+
+`orientation`: String - (optional) [vertical | horizontal] Controls how the form lays out.  Will the labels appear above
+the input element or inline. Default is "vertical".
 
 #### Field
 Controls the form input elements that get rendered.
 
 `name`: String - **required** The name of the field. This will NOT be visible in the UI. This property is used for
-        binding a data object with a form element. See the example below for more details.
+ binding a data object with a form element. See the example below for more details.
+
 `type`: String - **required** [input, textarea, date, credit-card, credit-card-expiration, checkbox, checkbox-group,
-        radio, radio-group]
+ radio, radio-group]
 
 Type                   | Description
 ---------------------- | -----------------------------------------------------------------------------------
@@ -37,20 +41,24 @@ radio-group            | A stack of vertical radio buttons.
 For more detail on the types and what options affect their presentation and data binding. See below.
 
 `title`: String - (recommended) The text that is displayed along with the form element. See the demo.
-`required`: Boolean - (optional) Set this to true to force validation on the field. If not validator is provided, the
-            default is to validate that the input is not empty.
-`maxlength`: Integer - (optional) If provided, limits the number of characters that can be typed into the input. For the
-             textarea type, this also provides a visual indicator beneath the textarea that shows how many characters
-             remain.
-`validator`: Function - (optional) A function that validates the input. The function will be called with the following
-             arguments.
-             ```
-             function(field /* The field config object */, input /* The raw user input */) {
-                // do some validation...
-             }
-             ```
 
-             Formlicious provides some validators for your convenience. See below for more details.
+`required`: Boolean - (optional) Set this to true to force validation on the field. If not validator is provided, the
+default is to validate that the input is not empty.
+
+`maxlength`: Integer - (optional) If provided, limits the number of characters that can be typed into the input. For the
+ textarea type, this also provides a visual indicator beneath the textarea that shows how many characters remain.
+
+`validator`: Function - (optional) A function that validates the input and returns true or false. The function will be
+called with the following arguments.
+
+```
+function(field /* The field config object */, input /* The raw user input */) {
+  // do some validation...
+  return true;
+}
+```
+
+Formlicious provides some validators for your convenience. See below for more details.
 
 #### button
 
