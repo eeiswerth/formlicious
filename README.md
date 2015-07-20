@@ -7,7 +7,7 @@ package can be found here: [meteor-formlicious-demo] (https://github.com/eeiswer
 
 ### Configuration Options
 
-`fields`: Array - **required** The array of form element objects the controls what form elements are rendered. See below.
+`fields`: Array - **required** The array of form element objects that controls what form elements are rendered. See below.
 
 `buttons`: Array - (recommended) The array of button objects that allow you to handle use interaction with the form.
 
@@ -23,8 +23,7 @@ Controls the form input elements that get rendered.
 `name`: String - **required** The name of the field. This will NOT be visible in the UI. This property is used for
  binding a data object with a form element. See the example below for more details.
 
-`type`: String - **required** [input, textarea, date, credit-card, credit-card-expiration, checkbox, checkbox-group,
- radio, radio-group]
+`type`: String - **required** [input | textarea | date | credit-card | credit-card-expiration | checkbox | checkbox-group | radio | radio-group]
 
 Type                   | Description
 ---------------------- | -----------------------------------------------------------------------------------
