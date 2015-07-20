@@ -41,6 +41,8 @@ For more detail on the types and what options affect their presentation and data
 
 `title`: String - (recommended) The text that is displayed along with the form element. See the demo.
 
+`id`: String - (optional) The id for the form element that corresponds to the field.
+
 `required`: Boolean - (optional) Set this to true to force validation on the field. If not validator is provided, the
 default is to validate that the input is not empty.
 
@@ -54,7 +56,7 @@ called with the following arguments.
 /**
  * @param field The field config object.
  * @param input The raw user input.
- * @return boolean
+ * @return boolean True if the input is valid, false otherwise.
  */
 function(field, input) {
   // do some validation...
@@ -64,13 +66,68 @@ function(field, input) {
 
 Formlicious provides some validators for your convenience. See below for more details.
 
-#### button
+#### Button
 
 ### Types
-Under construction
+Allows you to handle user interaction with the form.
+
+`text`: String - **required** The text that gets displayed on the button.
+
+`callback`: Function - (recommended) The callback that gets called when this button is clicked. The callback has the following form:
+
+```
+/**
+ * @param api The FormliciousAPI instance (see below).
+ * @param valid The result of the form validation. True if the form is valid, false otherwise.
+ * @param data The data object that was constructed by extracting the form data.
+ */
+function (api, valid, data) {
+  // Do something...
+}
+```
+
+`type`: String - (optional) [button | submit | reset] The button type. By default, "button". It is recommended that the main action button of the form be of type "submit". This will submit the form when either the enter key is pressed or the button is clicked.
+
+`classes`: String - (optional) CSS classes that will be applied to the button.  The default is "btn-default", but any style will work.  Typically the Bootstrap styles are used (i.e., btn-danger, btn-primary, btn-info, etc...).
 
 ### Validators
 Under construction
+
+### FormliciousAPI
+The API instance that allows you to programmatically control the form.
+
+#### Properties
+`options`: Essentially this is the configuration option that was passed to the formlicious template.  This instance has been augmented such that methods exist on each field instance that expose and API for each field. This provides individual API control for enabling, disabling, resetting, getting data, and setting data programmatically for individual fields.
+
+##### Option fields
+Each field in the options object has been augmented to expose an API on the individual fields:
+
+###### Properties
+`controlElement`: This is the jQuery instance of the form element.
+
+###### Methods
+`setData`: Sets the form element's data.
+
+`getData`: Gets the form element's data.
+
+`reset`: Resets/clears the form element. Same as calling setData(null).
+
+`validate`: Validates the form element.
+
+`disable`: Disables the form element.
+
+`enabled`: Enables the form element.
+
+#### Methods
+`reset`: Reset/clear the form.  The form will be empty after calling this.
+
+`validate`: Validates the form.
+
+`enable`: Enables the form. If the form is already enabled, this has no effect.
+
+`disable`: Disabled the form. If the form is already disabled, this has no effect.
+
+`clearErrors`: Clears the error styles from the form.
 
 ### Example
 
