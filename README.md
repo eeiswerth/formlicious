@@ -22,18 +22,17 @@ Controls the form input elements that get rendered.
 `type`: String - **required** [input, textarea, date, credit-card, credit-card-expiration, checkbox, checkbox-group,
         radio, radio-group]
 
-        | Type                   | Description                                                                         |
-        | ---------------------- | ----------------------------------------------------------------------------------- |
-        | input                  | A text input element.                                                               |
-        | textarea               | An enhanced textarea input element that provides a char counter showing the number  |
-        |                        | of characters remaining. This is only shown if maxlength is set on the field.       |
-        | date                   | A date selector.                                                                    |
-        | credit-card            | A convenience type that provides simple styling on type of the input element.       |
-        | credit-card-expiration | Two horizontal select elements that provide month and year selection.               |
-        | checkbox               | A single checkbox with a label to the right of the checkbox.                        |
-        | checkbox-group         | A stack of vertical checkboxes.                                                     |
-        | radio                  | A single radio button with a label to the right of the radio button.                |
-        | radio-group            | A stack of vertical radio buttons.                                                  |
+Type                   | Description
+---------------------- | -----------------------------------------------------------------------------------
+input                  | A text input element.
+textarea               | An enhanced textarea input element that provides a char counter showing the number  of characters remaining. This is only shown if maxlength is set on the field.
+date                   | A date selector.
+credit-card            | A convenience type that provides simple styling on type of the input element.
+credit-card-expiration | Two horizontal select elements that provide month and year selection.
+checkbox               | A single checkbox with a label to the right of the checkbox.
+checkbox-group         | A stack of vertical checkboxes.
+radio                  | A single radio button with a label to the right of the radio button.
+radio-group            | A stack of vertical radio buttons.
 
         For more detail on the types and what options affect their presentation and data binding. See below.
 `title`: String - (recommended) The text that is displayed along with the form element. See the demo.
