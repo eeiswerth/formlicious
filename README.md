@@ -52,7 +52,12 @@ default is to validate that the input is not empty.
 called with the following arguments.
 
 ```
-function(field /* The field config object */, input /* The raw user input */) {
+/**
+ * @param field The field config object.
+ * @param input The raw user input.
+ * @return boolean
+ */
+function(field, input) {
   // do some validation...
   return true;
 }
