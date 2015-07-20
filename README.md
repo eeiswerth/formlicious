@@ -68,7 +68,6 @@ Formlicious provides some validators for your convenience. See below for more de
 
 #### Button
 
-##### Types
 Allows you to handle user interaction with the form.
 
 `text`: String - **required** The text that gets displayed on the button.
