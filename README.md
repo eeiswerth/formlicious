@@ -1,11 +1,150 @@
 # formlicious
 
-#### Simple Bootstrap forms for Meteor
+### Simple Bootstrap forms for Meteor
 
 Currently formlicious is no more than a prototype. I haven't written tests yet.  But a demo application that uses the
 package can be found here: [meteor-formlicious-demo] (https://github.com/eeiswerth/meteor-formlicious-demo)
 
-#### Better documentation coming soon.
+### Configuration Options
+
+`fields`: Array - **required** The array of form element objects that controls what form elements are rendered. See below.
+
+`buttons`: Array - (recommended) The array of button objects that allow you to handle use interaction with the form.
+
+`data`: Object - (optional) If provided, must contain property names that bind to the name property in the field objects
+that are provided via the fields property. See field definitions below for more detail.
+
+`orientation`: String - (optional) [vertical | horizontal] Controls how the form lays out.  Will the labels appear above
+the input element or inline. Default is "vertical".
+
+#### Field
+Controls the form input elements that get rendered.
+
+`name`: String - **required** The name of the field. This will NOT be visible in the UI. This property is used for
+ binding a data object with a form element. See the example below for more details.
+
+`type`: String - **required** [input | textarea | date | credit-card | credit-card-expiration | checkbox | checkbox-group | radio | radio-group]
+
+Type                   | Description
+---------------------- | -----------------------------------------------------------------------------------
+input                  | A text input element.
+textarea               | An enhanced textarea input element that provides a char counter showing the number  of characters remaining. This is only shown if maxlength is set on the field.
+date                   | A date selector.
+credit-card            | A convenience type that provides simple styling on type of the input element.
+credit-card-expiration | Two horizontal select elements that provide month and year selection.
+checkbox               | A single checkbox with a label to the right of the checkbox.
+checkbox-group         | A stack of vertical checkboxes.
+radio                  | A single radio button with a label to the right of the radio button.
+radio-group            | A stack of vertical radio buttons.
+
+For more detail on the types and what options affect their presentation and data binding. See below.
+
+`title`: String - (recommended) The text that is displayed along with the form element. See the demo.
+
+`id`: String - (optional) The id for the form element that corresponds to the field.
+
+`required`: Boolean - (optional) Set this to true to force validation on the field. If not validator is provided, the
+default is to validate that the input is not empty.
+
+`maxlength`: Integer - (optional) If provided, limits the number of characters that can be typed into the input. For the
+ textarea type, this also provides a visual indicator beneath the textarea that shows how many characters remain.
+
+`validator`: Function - (optional) A function that validates the input and returns true or false. The function will be
+called with the following arguments.
+
+```
+/**
+ * @param field The field config object.
+ * @param input The raw user input.
+ * @return boolean True if the input is valid, false otherwise.
+ */
+function(field, input) {
+  // do some validation...
+  return true;
+}
+```
+
+Formlicious provides some validators for your convenience. See below for more details.
+
+#### Button
+
+Allows you to handle user interaction with the form.
+
+`text`: String - **required** The text that gets displayed on the button.
+
+`callback`: Function - (recommended) The callback that gets called when this button is clicked. The callback has the following form:
+
+```
+/**
+ * @param api The FormliciousAPI instance (see below).
+ * @param valid The result of the form validation. True if the form is valid, false otherwise.
+ * @param data The data object that was constructed by extracting the form data.
+ */
+function (api, valid, data) {
+  // Do something...
+}
+```
+
+`type`: String - (optional) [button | submit | reset] The button type. By default, "button". It is recommended that the main action button of the form be of type "submit". This will submit the form when either the enter key is pressed or the button is clicked.
+
+`classes`: String - (optional) CSS classes that will be applied to the button.  The default is "btn-default", but any style will work.  Typically the Bootstrap styles are used (i.e., btn-danger, btn-primary, btn-info, etc...).
+
+### Validators
+
+All validators expect to be passed the field object and the input data. For example,
+
+```
+function myValidator(field, input) {
+   // Validate the input against the field.
+   return true;
+}
+```
+
+`Formlicious.validators.nonEmptyValidator`: Ensures the input is not empty.
+
+`Formlicious.validators.stringValidator`: Ensures the input is valid as per the field config object. Specifically, if maxlength was provided, this will validate it.
+
+`Formlicious.validators.creditCardValidator`: Validates the credit card number using the Luhn algorithm.
+
+`Formlicious.validators.creditCardExpirationValidator`: Validates the the year and month are valid.
+
+### FormliciousAPI
+The API instance that allows you to programmatically control the form.
+
+#### Properties
+`options`: Essentially this is the configuration option that was passed to the formlicious template.  This instance has been augmented such that methods exist on each field instance that expose an API for each field. This provides individual API control for enabling, disabling, resetting, getting data, and setting data programmatically for individual fields.
+
+##### Option fields
+Each field in the options object has been augmented to expose an API on the individual fields:
+
+###### Properties
+`controlElement`: This is the jQuery instance of the form element.
+
+###### Methods
+`setData`: Sets the form element's data.
+
+`getData`: Gets the form element's data.
+
+`reset`: Resets/clears the form element. Same as calling setData(null).
+
+`validate`: Validates the form element.
+
+`disable`: Disables the form element.
+
+`enabled`: Enables the form element.
+
+#### Methods
+`reset`: Reset/clear the form.  The form will be empty after calling this.
+
+`validate`: Validates the form.
+
+`enable`: Enables the form. If the form is already enabled, this has no effect.
+
+`disable`: Disabled the form. If the form is already disabled, this has no effect.
+
+`clearErrors`: Clears the error styles from the form.
+
+### Example
 
 HTML:
 ```
@@ -26,7 +165,7 @@ Template.myForm.helpers({
 					title: 'My textarea',
 					type: 'textarea',
 					maxlength: 500,
-					validators: Formlicious.validators.stringValidator
+					validator: Formlicious.validators.stringValidator
 				},
 				{
 				   	name: 'field2',
