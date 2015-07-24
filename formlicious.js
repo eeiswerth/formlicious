@@ -5,18 +5,19 @@ var _api;
 var _fieldUtils = {};
 var _buttonUtils = {};
 
-var FormliciousAPI = function(options, fields) {
+var FormliciousAPI = function(options, fields, buttons) {
     this.options = options;
     this.fields = fields;
+    this.buttons = buttons;
 };
 
-FormliciousAPI.prototype._execFunc = function(func, buttons) {
+FormliciousAPI.prototype._execFunc = function(func, buttonFunc) {
     $.each(this.fields, function(i, field) {
         field[func]();
     });
 
-    if (buttons) {
-        $.each(this.options.buttons, function(i, button) {
+    if (buttonFunc) {
+        $.each(this.buttons, function(i, button) {
             button[func]();
         });
     }
@@ -65,7 +66,7 @@ FormliciousAPI.prototype.disable = function() {
  * Enables all the form elements and buttons.
  */
 FormliciousAPI.prototype.enable = function() {
-    this._execFunc('enable', false);
+    this._execFunc('enable', true);
 };
 
 /**
@@ -321,7 +322,7 @@ Template.formlicious.onCreated(function() {
 
     _vertical = isVertical;
     _formId = FormliciousUtils.getCount();
-    _api = new FormliciousAPI(_options, _fieldUtils);
+    _api = new FormliciousAPI(_options, _fieldUtils, _buttonUtils);
 });
 
 Template.formlicious.onDestroyed(function() {

@@ -89,6 +89,8 @@ function (api, valid, data) {
 
 `classes`: String - (optional) CSS classes that will be applied to the button.  The default is "btn-default", but any style will work.  Typically the Bootstrap styles are used (i.e., btn-danger, btn-primary, btn-info, etc...).
 
+`disableOnClick`: Boolean - (optional) If true, the form will be disabled after the user clicks the button. To re-enable the state you should call the api that is passes to the callback (see the FormliciousAPI).
+
 ### Validators
 
 All validators expect to be passed the field object and the input data. For example,
