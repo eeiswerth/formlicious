@@ -1,6 +1,6 @@
 Package.describe({
   name: 'eeiswerth:formlicious',
-  version: '0.0.5',
+  version: '0.0.6',
   // Brief, one-line summary of the package.
   summary: 'Simple Bootstrap forms for Meteor',
   // URL to the Git repository containing the source code for this package.
@@ -14,6 +14,7 @@ Package.onUse(function(api) {
   api.versionsFrom('1.1.0.2');
   api.use('templating');
   api.use('reactive-var');
+  api.use('jquery');
   api.use('rajit:bootstrap3-datepicker@1.4.1');
 
   api.addFiles([

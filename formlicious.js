@@ -315,10 +315,16 @@ Template.formlicious.onCreated(function() {
     if (!$.isArray(_options.fields)) {
         throw new Error('Fields property must be an array.');
     }
+
+    var fieldNames = [];
     $.each(_options.fields, function(i, field) {
        if (!field.name || !field.type) {
            throw new Error("Fields need a name and a type.");
        }
+       if ($.inArray(field.name, fieldNames) !== -1) {
+           throw new Error("Fields names must be unique. Duplicate field name: " + field.name);
+       }
+       fieldNames.push(field.name);
     });
 
     if (_options.buttons) {
