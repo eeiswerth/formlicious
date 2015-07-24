@@ -197,7 +197,7 @@ var handleButtonClick = function(button) {
     if (result && button.disableOnClick) {
         _api.disable();
     }
-    if (result && _options.showSpinnerOnSubmit) {
+    if (result && button.type === 'submit' && _options.showSpinnerOnSubmit) {
         _spinner.set(true);
     }
     var data = getFormData();

@@ -19,6 +19,7 @@ the input element or inline. Default is "vertical".
 
 `showSpinnerOnSubmit`: Boolean - (optional) When the form is validated and this option is set to true, a spinner will be displayed
 to the left of the buttons. To hide the spinner use the `FormliciousAPI.hideSpinner()` method that is passed to your button callback.
+**Note** that you must have a button of type `submit` for this to work. Only the submit button type triggers the event.
 
 `spinnerUrl`: String - (optional) Allows you to override the default spinner image. You can override the styles applied to the image
 using the .formlicious-spinner CSS selector. For example, "/img/my-spinner.gif".
