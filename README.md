@@ -17,6 +17,12 @@ that are provided via the fields property. See field definitions below for more 
 `orientation`: String - (optional) [vertical | horizontal] Controls how the form lays out.  Will the labels appear above
 the input element or inline. Default is "vertical".
 
+`showSpinnerOnSubmit`: Boolean - (optional) When the form is validated and this option is set to true, a spinner will be displayed
+to the left of the buttons. To hide the spinner use the `FormliciousAPI.hideSpinner()` method that is passed to your button callback.
+
+`spinnerUrl`: String - (optional) Allows you to override the default spinner image. You can override the styles applied to the image
+using the .formlicious-spinner CSS selector. For example, "/img/my-spinner.gif".
+
 #### Field
 Controls the form input elements that get rendered.
 
@@ -146,6 +152,10 @@ Each field in the options object has been augmented to expose an API on the indi
 
 `clearErrors`: Clears the error styles from the form.
 
+`showSpinner`: Shows the spinner next to the buttons.
+
+`hideSpinner`: Hides the spinner next to the buttons.
+
 ### Example
 
 HTML:
@@ -161,6 +171,7 @@ Template.myForm.helpers({
 	myOptions: function() {
 		return {
 			orientation: 'vertical', // Optional - vertical by default. Can be horizontal as well.
+			showSpinnerOnSubmit: true, // Optional - false by default.
 			fields: [
 				{
 					name: 'field1',

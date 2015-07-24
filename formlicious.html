@@ -143,6 +143,9 @@
 
 <template name="formliciousButtons">
 	<div class="formlicious-button-group">
+    {{#if showSpinner}}
+        {{> formliciousSpinner}}
+    {{/if}}
 		{{#each options.buttons}}
 			{{> formliciousButton}}
 		{{/each}}
@@ -151,4 +154,8 @@
 
 <template name="formliciousButton">
 	<button class="btn {{classes}}" type="{{type}}">{{text}}</button>
+</template>
+
+<template name="formliciousSpinner">
+  <img class="formlicious-spinner" src="{{spinnerUrl}}"/>
 </template>

@@ -4,9 +4,11 @@ var _vertical = true;
 var _api;
 var _fieldUtils = {};
 var _buttonUtils = {};
+var _spinner = new ReactiveVar(false);
 
-var FormliciousAPI = function(options, fields, buttons) {
+var FormliciousAPI = function(options, spinner, fields, buttons) {
     this.options = options;
+    this.spinner = spinner;
     this.fields = fields;
     this.buttons = buttons;
 };
@@ -83,6 +85,20 @@ FormliciousAPI.prototype.clearErrors = function() {
         // Clear error state.
         controlElementParent.removeClass('has-error');
     });
+};
+
+/**
+ * Show the spinner.
+ */
+FormliciousAPI.prototype.showSpinner = function() {
+    this.spinner.set(true);
+};
+
+/**
+ * Hide the spinner.
+ */
+FormliciousAPI.prototype.hideSpinner = function() {
+    this.spinner.set(false);
 };
 
 var updateTextareaCounter = function(textareaElem) {
@@ -180,6 +196,9 @@ var handleButtonClick = function(button) {
     var result = _api.validate();
     if (result && button.disableOnClick) {
         _api.disable();
+    }
+    if (result && _options.showSpinnerOnSubmit) {
+        _spinner.set(true);
     }
     var data = getFormData();
     button.callback(_api, result, data);
@@ -322,7 +341,7 @@ Template.formlicious.onCreated(function() {
 
     _vertical = isVertical;
     _formId = FormliciousUtils.getCount();
-    _api = new FormliciousAPI(_options, _fieldUtils, _buttonUtils);
+    _api = new FormliciousAPI(_options, _spinner, _fieldUtils, _buttonUtils);
 });
 
 Template.formlicious.onDestroyed(function() {
@@ -629,6 +648,12 @@ Template.formliciousRadioButtonGroupField.onRendered(function() {
     initCheckboxAndRadioGroupInputs.call(this, '.formlicious-radio', '.formlicious-radio-group');
 });
 
+Template.formliciousButtons.helpers({
+    showSpinner: function() {
+        return _spinner.get();
+    }
+});
+
 Template.formliciousButton.onRendered(function() {
     var button = getButtonObject(this.data);
     button.controlElement =  $(this.find('button'));
@@ -658,4 +683,13 @@ Template.formliciousButton.events({
        }
        handleButtonClick(this);
    }
+});
+
+Template.formliciousSpinner.helpers({
+    spinnerUrl: function() {
+        if (this.options.spinnerUrl) {
+            return this.options.spinnerUrl;
+        }
+        return '/packages/eeiswerth_formlicious/img/loading.gif';
+    }
 });

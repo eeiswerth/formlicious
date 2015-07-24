@@ -22,3 +22,7 @@
 .checkbox.formlicious-checkbox {
     margin-top: 0px;
 }
+
+.formlicious-button-group {
+    float: right;
+}
