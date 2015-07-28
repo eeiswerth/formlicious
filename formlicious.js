@@ -622,7 +622,7 @@ Template.formliciousCCExpirationField.helpers({
        var years = [];
        years.push('');
        var currentYear = new Date().getFullYear();
-       for (var i = currentYear + 20; i >= currentYear; --i) {
+       for (var i = currentYear; i <= currentYear + 20; ++i) {
            years.push(i);
        }
        return years;

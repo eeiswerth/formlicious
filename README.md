@@ -50,6 +50,8 @@ For more detail on the types and what options affect their presentation and data
 
 `id`: String - (optional) The id for the form element that corresponds to the field.
 
+`placeholder`: String - (optional) Placeholder text for the element. Only works for input, date, and credit-card types.
+
 `required`: Boolean - (optional) Set this to true to force validation on the field. If not validator is provided, the
 default is to validate that the input is not empty.
 
