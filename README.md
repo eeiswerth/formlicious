@@ -5,6 +5,16 @@
 Currently formlicious is no more than a prototype. I haven't written tests yet.  But a demo application that uses the
 package can be found here: [meteor-formlicious-demo] (https://github.com/eeiswerth/meteor-formlicious-demo)
 
+### Table of Contents
+[Configuration Options](#configuration-options)
+  [Field](#field)
+  [Button](#button)
+[Validators](#validators)
+[FormliciousAPI](#api)
+  [Properties](#properties)
+  [Methods](#methods)
+[Example](#example)
+
 ### Configuration Options
 
 `fields`: Array - **required** The array of form element objects that controls what form elements are rendered. See below.
