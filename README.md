@@ -10,7 +10,7 @@ package can be found here: [meteor-formlicious-demo] (https://github.com/eeiswer
   * [Field](#field)
   * [Button](#button)
 * [Validators](#validators)
-* [FormliciousAPI](#api)
+* [FormliciousAPI](#formliciousapi)
   * [Properties](#properties)
   * [Methods](#methods)
 * [Example](#example)
