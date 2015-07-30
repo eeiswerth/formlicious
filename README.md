@@ -6,14 +6,14 @@ Currently formlicious is no more than a prototype. I haven't written tests yet. 
 package can be found here: [meteor-formlicious-demo] (https://github.com/eeiswerth/meteor-formlicious-demo)
 
 ### Table of Contents
-[Configuration Options](#configuration-options)
-  [Field](#field)
-  [Button](#button)
-[Validators](#validators)
-[FormliciousAPI](#api)
-  [Properties](#properties)
-  [Methods](#methods)
-[Example](#example)
+* [Configuration Options](#configuration-options)
+  * [Field](#field)
+  * [Button](#button)
+* [Validators](#validators)
+* [FormliciousAPI](#api)
+  * [Properties](#properties)
+  * [Methods](#methods)
+* [Example](#example)
 
 ### Configuration Options
 
