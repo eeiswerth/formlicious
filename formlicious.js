@@ -400,6 +400,9 @@ Template.formliciousFields.helpers({
     },
     radioGroupType: function() {
         return this.type === 'radio-group';
+    },
+    dropzoneType: function() {
+        return this.type === 'dropzone';
     }
 });
 
@@ -654,6 +657,39 @@ Template.formliciousRadioButtonGroupField.onRendered(function() {
     initCheckboxAndRadioGroupInputs.call(this, '.formlicious-radio', '.formlicious-radio-group');
 });
 
+Template.formliciousDropzoneField.onRendered(function() {
+  var field = getFieldObject(this.data);
+  field.controlElement = $(this.find('.dropzone'));
+  field.getData = function() {
+    var dropzone = this.controlElement.get(0).dropzone;
+    return dropzone.getAcceptedFiles();
+  };
+  field.setData = function(value) {
+    throw new Error("setData is not supported for the dropzone field type.");
+  };
+  field.reset = function() {
+    var dropzone = this.controlElement.get(0).dropzone;
+    dropzone.removeAllFiles();
+  };
+  field.validate = function() {
+    return validateControl(this.controlElement, this);
+  };
+  field.disable = function() {
+    this.controlElement.prop("disabled", true);
+  };
+  field.enable = function() {
+    this.controlElement.prop("disabled", false);
+  };
+
+  // TODO: Add support for setting files in the dropzone via data property.
+  /*var data = getFieldData(this.data);
+  field.setData(data);*/
+});
+
+Template.formliciousDropzoneField.helpers({
+
+});
+
 Template.formliciousButtons.helpers({
     showSpinner: function() {
         return _spinner.get();
@@ -699,3 +735,30 @@ Template.formliciousSpinner.helpers({
         return '/packages/eeiswerth_formlicious/img/loading.gif';
     }
 });
+
+Template.formliciousProgressBar.updateProgressBar = function(id, progress) {
+    var progressBar = $('#' + id + '-progress-bar');
+    if (!progressBar) {
+        return;
+    }
+    if (progress < 0 || progress > 100) {
+        return;
+    }
+    var progressBarElems = progressBar.find('.progress-bar');
+    if (!progressBarElems || progressBarElems.length !== 1) {
+        throw new Error("Invalid number of progress bar children: " + progressBarElems.length);
+    }
+    progressBar.removeClass('hidden');
+    var progressBarElem = $(progressBarElems[0]);
+    progressBarElem.attr('aria-valuenow', progress);
+    progressBarElem.css('width', progress + '%');
+    progressBarElem.html(progress + '%');
+};
+
+Template.formliciousProgressBar.hideProgressBar = function(id) {
+    var progressBar = $('#' + id + 'upload-progress-bar');
+    if (!progressBar) {
+        return;
+    }
+    progressBar.addClass('hidden');
+};
