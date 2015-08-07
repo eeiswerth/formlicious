@@ -9,6 +9,7 @@ package can be found here: [meteor-formlicious-demo] (https://github.com/eeiswer
 * [Configuration Options](#configuration-options)
   * [Field](#field)
   * [Button](#button)
+  * [Dropzone Configuration](#dropzone-configuration)
 * [Validators](#validators)
 * [FormliciousAPI](#formliciousapi)
   * [Properties](#properties)
@@ -40,7 +41,7 @@ Controls the form input elements that get rendered.
 `name`: String - **required** The name of the field. This will NOT be visible in the UI. This property is used for
  binding a data object with a form element. See the example below for more details.
 
-`type`: String - **required** [input | textarea | date | credit-card | credit-card-expiration | checkbox | checkbox-group | radio | radio-group]
+`type`: String - **required** [input | textarea | date | credit-card | credit-card-expiration | checkbox | checkbox-group | radio | radio-group | dropzone]
 
 Type                   | Description
 ---------------------- | -----------------------------------------------------------------------------------
@@ -53,6 +54,7 @@ checkbox               | A single checkbox with a label to the right of the chec
 checkbox-group         | A stack of vertical checkboxes.
 radio                  | A single radio button with a label to the right of the radio button.
 radio-group            | A stack of vertical radio buttons.
+dropzone               | A Dropzone for file uploads. See [Dropzone](http://www.dropzonejs.com/). Jump to the [Dropzone Configuration](#dropzone-configuration) to learn more.
 
 For more detail on the types and what options affect their presentation and data binding. See below.
 
@@ -109,6 +111,14 @@ function (api, valid, data) {
 `classes`: String - (optional) CSS classes that will be applied to the button.  The default is "btn-default", but any style will work.  Typically the Bootstrap styles are used (i.e., btn-danger, btn-primary, btn-info, etc...).
 
 `disableOnClick`: Boolean - (optional) If true, the form will be disabled after the user clicks the button. To re-enable the state you should call the api that is passes to the callback (see the FormliciousAPI).
+
+#### Dropzone Configuration
+
+`options`: You can provide any of the supported dropzone options as per dropzone documentation: [Dropzone](http://www.dropzonejs.com/#configuration-options)
+
+**Note:** The default behavior is to NOT post the uploads to the server.  Instead it is recommended that you use something like [Slingshot](https://atmospherejs.com/edgee/slingshot) to upload the files to S3 or some other cloud provider.
+
+By default, the button callback will receive the files array in the data object for the dropzone fields.  You can use those file objects to handle the upload with Slinshot. An example will be provided via a wiki page shortly.
 
 ### Validators
 

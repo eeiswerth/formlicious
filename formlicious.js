@@ -400,6 +400,9 @@ Template.formliciousFields.helpers({
     },
     radioGroupType: function() {
         return this.type === 'radio-group';
+    },
+    dropzoneType: function() {
+        return this.type === 'dropzone';
     }
 });
 
@@ -654,6 +657,46 @@ Template.formliciousRadioButtonGroupField.onRendered(function() {
     initCheckboxAndRadioGroupInputs.call(this, '.formlicious-radio', '.formlicious-radio-group');
 });
 
+Template.formliciousDropzoneField.onCreated(function() {
+});
+
+Template.formliciousDropzoneField.onRendered(function() {
+  var dropzoneOptions = {
+    url: '/dummy',
+    id: this.data.id
+  };
+  if (this.data.options) {
+    $.each(this.data.options, function (key, value) {
+      dropzoneOptions[key] = value;
+    });
+  }
+
+  var dropzone = new Dropzone('.dropzone', dropzoneOptions);
+  dropzone.uploadFiles = DropzoneUtils.uploadFiles;
+
+  var field = getFieldObject(this.data);
+  field.dropzone = dropzone;
+  field.controlElement = $(dropzone.element);
+  field.getData = function () {
+    return this.dropzone.getAcceptedFiles();
+  };
+  field.setData = function (value) {
+    throw new Error("setData is not supported for the dropzone field type.");
+  };
+  field.reset = function () {
+    this.dropzone.removeAllFiles();
+  };
+  field.validate = function () {
+    return validateControl(this.controlElement, this);
+  };
+  field.disable = function () {
+    this.controlElement.prop("disabled", true);
+  };
+  field.enable = function () {
+    this.controlElement.prop("disabled", false);
+  };
+});
+
 Template.formliciousButtons.helpers({
     showSpinner: function() {
         return _spinner.get();
@@ -699,3 +742,30 @@ Template.formliciousSpinner.helpers({
         return '/packages/eeiswerth_formlicious/img/loading.gif';
     }
 });
+
+Template.formliciousProgressBar.updateProgressBar = function(id, progress) {
+    var progressBar = $('#' + id + '-progress-bar');
+    if (!progressBar) {
+        return;
+    }
+    if (progress < 0 || progress > 100) {
+        return;
+    }
+    var progressBarElems = progressBar.find('.progress-bar');
+    if (!progressBarElems || progressBarElems.length !== 1) {
+        throw new Error("Invalid number of progress bar children: " + progressBarElems.length);
+    }
+    progressBar.removeClass('hidden');
+    var progressBarElem = $(progressBarElems[0]);
+    progressBarElem.attr('aria-valuenow', progress);
+    progressBarElem.css('width', progress + '%');
+    progressBarElem.html(progress + '%');
+};
+
+Template.formliciousProgressBar.hideProgressBar = function(id) {
+    var progressBar = $('#' + id + 'upload-progress-bar');
+    if (!progressBar) {
+        return;
+    }
+    progressBar.addClass('hidden');
+};
