@@ -657,7 +657,23 @@ Template.formliciousRadioButtonGroupField.onRendered(function() {
     initCheckboxAndRadioGroupInputs.call(this, '.formlicious-radio', '.formlicious-radio-group');
 });
 
+Template.formliciousDropzoneField.onCreated(function() {
+});
+
 Template.formliciousDropzoneField.onRendered(function() {
+  var dropzoneData = {
+    url: '/dummy',
+    id: this.data.id
+  };
+  if (this.data.options) {
+    $.each(this.data.options, function(key, value) {
+      dropzoneData[key] = value;
+    });
+  }
+
+  var dropzoneContainer = this.find('.formlicious-dropzone-container');
+  Blaze.renderWithData(Template.dropzone, dropzoneData, dropzoneContainer);
+
   var field = getFieldObject(this.data);
   field.controlElement = $(this.find('.dropzone'));
   field.getData = function() {

@@ -5,7 +5,6 @@
  */
 Router.route('/dummy', {where: 'server'})
   .post(function() {
-    console.log("POSTED");
     this.response.statusCode = 200;
     this.response.end('');
   });
