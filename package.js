@@ -18,7 +18,6 @@ Package.onUse(function(api) {
   api.use('rajit:bootstrap3-datepicker@1.4.1');
   api.use('dbarrett:dropzonejs@4.0.2');
   api.use('edgee:slingshot@0.7.1');
-  api.use('iron:router@1.0.9');
 
   api.addFiles([
       'formlicious.html',

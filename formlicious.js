@@ -661,56 +661,40 @@ Template.formliciousDropzoneField.onCreated(function() {
 });
 
 Template.formliciousDropzoneField.onRendered(function() {
-  var dropzoneData = {
+  var dropzoneOptions = {
     url: '/dummy',
     id: this.data.id
   };
   if (this.data.options) {
-    $.each(this.data.options, function(key, value) {
-      dropzoneData[key] = value;
+    $.each(this.data.options, function (key, value) {
+      dropzoneOptions[key] = value;
     });
   }
 
-  var dropzoneContainer = this.find('.formlicious-dropzone-container');
-  Blaze.renderWithData(Template.dropzone, dropzoneData, dropzoneContainer);
+  var dropzone = new Dropzone('.dropzone', dropzoneOptions);
+  dropzone.uploadFiles = DropzoneUtils.uploadFiles;
 
   var field = getFieldObject(this.data);
-  field.controlElement = $(this.find('.dropzone'));
-  field.getData = function() {
-    var dropzone = this.controlElement.get(0).dropzone;
-    return dropzone.getAcceptedFiles();
+  field.dropzone = dropzone;
+  field.controlElement = $(dropzone.element);
+  field.getData = function () {
+    return this.dropzone.getAcceptedFiles();
   };
-  field.setData = function(value) {
+  field.setData = function (value) {
     throw new Error("setData is not supported for the dropzone field type.");
   };
-  field.reset = function() {
-    var dropzone = this.controlElement.get(0).dropzone;
-    dropzone.removeAllFiles();
+  field.reset = function () {
+    this.dropzone.removeAllFiles();
   };
-  field.validate = function() {
+  field.validate = function () {
     return validateControl(this.controlElement, this);
   };
-  field.disable = function() {
+  field.disable = function () {
     this.controlElement.prop("disabled", true);
   };
-  field.enable = function() {
+  field.enable = function () {
     this.controlElement.prop("disabled", false);
   };
-
-  // TODO: Add support for setting files in the dropzone via data property.
-  /*var data = getFieldData(this.data);
-  field.setData(data);*/
-});
-
-Template.formliciousDropzoneFieldInit.helpers({
-  init: function() {
-    var field = getFieldObject(this);
-    console.log(field);
-    console.log(field.controlElement);
-    var dropzone = field.controlElement.get(0).dropzone;
-    // Override the upload files method since we're going to bypass the post.
-    dropzone.uploadFiles = DropzoneUtils.uploadFiles;
-  }
 });
 
 Template.formliciousButtons.helpers({
