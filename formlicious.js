@@ -702,8 +702,15 @@ Template.formliciousDropzoneField.onRendered(function() {
   field.setData(data);*/
 });
 
-Template.formliciousDropzoneField.helpers({
-
+Template.formliciousDropzoneFieldInit.helpers({
+  init: function() {
+    var field = getFieldObject(this);
+    console.log(field);
+    console.log(field.controlElement);
+    var dropzone = field.controlElement.get(0).dropzone;
+    // Override the upload files method since we're going to bypass the post.
+    dropzone.uploadFiles = DropzoneUtils.uploadFiles;
+  }
 });
 
 Template.formliciousButtons.helpers({

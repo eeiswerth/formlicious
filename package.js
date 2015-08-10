@@ -28,10 +28,6 @@ Package.onUse(function(api) {
       'lib/utils.js',
       'lib/exports.js'], 'client');
 
-  api.addFiles([
-      'server/config.js'
-  ], 'server');
-
   api.export('Formlicious');
 });
 
