@@ -114,8 +114,11 @@ function (api, valid, data) {
 
 #### Dropzone Configuration
 
-`id`: It is recommended that you provide an id to field configuration object for the dropzone type.
 `options`: You can provide any of the supported dropzone options as per dropzone documentation: [Dropzone](http://www.dropzonejs.com/#configuration-options)
+
+**Note:** The default behavior is to NOT post the uploads to the server.  Instead it is recommended that you use something like [Slingshot](https://atmospherejs.com/edgee/slingshot) to upload the files to S3 or some other cloud provider.
+
+By default, the button callback will receive the files array in the data object for the dropzone fields.  You can use those file objects to handle the upload with Slinshot. An example will be provided via a wiki page shortly.
 
 ### Validators
 

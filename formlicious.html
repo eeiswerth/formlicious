@@ -146,7 +146,9 @@
 </template>
 
 <template name="formliciousDropzoneField">
-  <div class="dropzone">
+  <label class="{{titleClasses}} control-label">{{title}}</label>
+  <div class="formlicious-dropzone form-group">
+    <div class="dropzone"></div>
   </div>
   {{> formliciousProgressBar}}
 </template>
