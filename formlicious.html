@@ -8,7 +8,7 @@
 <template name="formliciousFields">
 	<div>
 		{{#each options.fields}}
-			<div class="form-group">
+			<div class="form-group formlicious-form-group">
 				{{#if inputType}}
 					{{> formliciousInputField}}
 				{{else}}
@@ -38,6 +38,10 @@
                         {{else}}
                           {{#if dropzoneType}}
                             {{> formliciousDropzoneField}}
+                          {{else}}
+                            {{#if fileUploadType}}
+                              {{> formliciousFileUploadField}}
+                            {{/if}}
                           {{/if}}
 				 								{{/if}}
 											{{/if}}
@@ -148,9 +152,32 @@
 <template name="formliciousDropzoneField">
   <label class="{{titleClasses}} control-label">{{title}}</label>
   <div class="formlicious-dropzone form-group">
-    <div class="dropzone"></div>
+    <div id="{{id}}" class="dropzone"></div>
   </div>
   {{> formliciousProgressBar}}
+</template>
+
+<template name="formliciousFileUploadField">
+  <label for="{{id}}" class="{{titleClasses}} control-label">{{title}}</label>
+  {{#if uploadUrl}}
+    <div class="file-upload-container" style="width: {{width}}px;">
+      <img src="{{previewUrl}}" class="preview-image"/>
+      <div class="file-name">
+        {{filename}}
+      </div>
+      <div class="file-upload-actions">
+        <button type="button" class="btn btn-danger" title="{{removeText}}">
+          <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  {{/if}}
+  {{> formliciousProgressBar}}
+  <div class="file-upload-button">
+    <span class="btn btn-link btn-file">
+      <span class="glyphicon glyphicon-upload" aria-hidden="true"></span> {{buttonText}} <input type="file" accept="{{accept}}">
+    </span>
+  </div>
 </template>
 
 <template name="formliciousButtons">

@@ -39,3 +39,58 @@
 .formlicious-dropzone.form-group.has-error > .dropzone {
     border-color: #a94442;
 }
+
+.formlicious-form-group .file-upload-container {
+    position: relative;
+}
+
+.formlicious-form-group .file-upload-container .file-upload-actions {
+    position: absolute;
+    top: -5px;
+    left: 5px;
+}
+
+.formlicious-form-group .file-upload-container .file-name {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    word-break: break-all;
+    /* Safari 3-4, iOS 1-3.2, Android 1.6- */
+    -webkit-border-radius: 5px;
+    /* Firefox 1-3.6 */
+    -moz-border-radius: 5px;
+    /* Opera 10.5, IE 9, Safari 5, Chrome, Firefox 4, iOS 4, Android 2.1+ */
+    border-radius: 5px;
+    padding: 2px;
+    background-color: #ccc;
+}
+
+.formlicious-form-group .btn-file {
+    position: relative;
+    overflow: hidden;
+}
+
+.formlicious-form-group .btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+.formlicious-form-group .preview-image {
+    width: 100%;
+    height: auto;
+    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+    -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+}

@@ -403,6 +403,9 @@ Template.formliciousFields.helpers({
     },
     dropzoneType: function() {
         return this.type === 'dropzone';
+    },
+    fileUploadType: function() {
+      return this.type = 'file-upload';
     }
 });
 
@@ -657,9 +660,6 @@ Template.formliciousRadioButtonGroupField.onRendered(function() {
     initCheckboxAndRadioGroupInputs.call(this, '.formlicious-radio', '.formlicious-radio-group');
 });
 
-Template.formliciousDropzoneField.onCreated(function() {
-});
-
 Template.formliciousDropzoneField.onRendered(function() {
   var dropzoneOptions = {
     url: '/dummy',
@@ -695,6 +695,147 @@ Template.formliciousDropzoneField.onRendered(function() {
   field.enable = function () {
     this.controlElement.prop("disabled", false);
   };
+});
+
+Template.formliciousFileUploadField.onCreated(function() {
+  var field = getFieldObject(this.data);
+  field.uploadedFileUrl = new ReactiveVar(null);
+});
+
+Template.formliciousFileUploadField.onRendered(function() {
+  var field = getFieldObject(this.data);
+  field.controlElement = $(this.find('.file-upload-button'));
+  field.getData = function() {
+    return this.uploadedFileUrl.get();
+  };
+  field.setData = function(value) {
+    this.uploadedFileUrl.set(value);
+  };
+  field.reset = function() {
+    this.setData(null);
+  };
+  field.validate = function() {
+    return validateControl(this.controlElement, this);
+  };
+  field.disable = function() {
+    this.controlElement.find('input').prop("disabled", true);
+  };
+  field.enable = function() {
+    this.controlElement.find('input').prop("disabled", false);
+  };
+  field.getWidth = function() {
+    var width = 130;
+    if (this.width) {
+      width = this.width;
+    }
+    return width;
+  };
+
+  var data = getFieldData(this.data);
+  field.setData(data);
+});
+
+Template.formliciousFileUploadField.helpers({
+  width: function() {
+    var field = getFieldObject(this);
+    return field.getWidth();
+  },
+  uploadUrl: function() {
+    var field = getFieldObject(this);
+    var data = field.uploadedFileUrl.get();
+    if (data) {
+      return data.dataUrl;
+    }
+    return null;
+  },
+  previewUrl: function() {
+    var field = getFieldObject(this);
+    var data = field.uploadedFileUrl.get();
+    var url = null;
+
+    if (data) {
+      url = data.dataUrl;
+    }
+
+    if (url && url.indexOf('data:image') === 0) {
+      // If it's an image, display an image preview. Otherwise show a default file icon.
+      return url;
+    }
+
+    if (field.previewImageUrl) {
+      return field.previewImageUrl;
+    } else {
+      return '/packages/eeiswerth_formlicious/img/file-icon.png';
+    }
+  },
+  filename: function() {
+    var field = getFieldObject(this);
+    var data = field.uploadedFileUrl.get();
+    if (data) {
+      return data.name;
+    }
+    return null;
+  }
+});
+
+Template.formliciousFileUploadField.events({
+  'click input[type=file]': function(e, tmpl) {
+    var input = e.currentTarget;
+    input.value = null;
+  },
+  'change input[type=file]': function(e, tmpl) {
+    var field = getFieldObject(this);
+    var type = null;
+    var input = tmpl.find('input[type=file]');
+    var files = input.files;
+
+    if (files.length === 0) {
+      // They hit cancel.
+      return;
+    }
+
+    if (this.accept) {
+      type = new RegExp(this.accept);
+    }
+
+    var file = files[0];
+    if (type && !file.type.match(type)) {
+      // TODO: Throw an error. The wrong type of file is being uploaded.
+      console.error("Invalid type: " + file.type);
+      return;
+    }
+
+    if (!window.FileReader) {
+      // TODO: throw an error. The browser doesn't support the FileReader API.
+      console.error("Browser doesn't support FileReader API.");
+      return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function(evt) {
+      var data = {
+        dataUrl: evt.target.result,
+        name: FormliciousUtils.formatFilename(file.name, field.getWidth())
+      };
+      field.uploadedFileUrl.set(data);
+    };
+
+    reader.onabort = function() {
+      console.error('File reader aborted.');
+      console.error(arguments);
+    };
+
+    reader.onerror = function() {
+      console.error('File reader error file.');
+      console.error(arguments);
+    };
+
+    reader.readAsDataURL(file);
+  },
+  'click .file-upload-actions button': function(e, tmpl) {
+    var field = getFieldObject(this);
+    field.uploadedFileUrl.set(null);
+  }
 });
 
 Template.formliciousButtons.helpers({
