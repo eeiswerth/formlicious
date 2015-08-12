@@ -831,6 +831,10 @@ Template.formliciousFileUploadField.events({
     };
 
     reader.readAsDataURL(file);
+  },
+  'click .file-upload-actions button': function(e, tmpl) {
+    var field = getFieldObject(this);
+    field.uploadedFileUrl.set(null);
   }
 });
 
