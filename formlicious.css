@@ -40,6 +40,24 @@
     border-color: #a94442;
 }
 
+.formlicious-form-group .file-upload-container {
+    position: relative;
+}
+
+.formlicious-form-group .file-upload-container .file-upload-actions {
+    position: absolute;
+    top: -5px;
+    left: 5px;
+}
+
+.formlicious-form-group .file-upload-container .file-name {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    word-break: break-all;
+}
+
 .formlicious-form-group .btn-file {
     position: relative;
     overflow: hidden;

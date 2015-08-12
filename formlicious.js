@@ -723,26 +723,58 @@ Template.formliciousFileUploadField.onRendered(function() {
   field.enable = function() {
     this.controlElement.find('input').prop("disabled", false);
   };
+  field.getWidth = function() {
+    var width = 130;
+    if (this.width) {
+      width = this.width;
+    }
+    return width;
+  };
 
   var data = getFieldData(this.data);
   field.setData(data);
 });
 
 Template.formliciousFileUploadField.helpers({
+  width: function() {
+    var field = getFieldObject(this);
+    return field.getWidth();
+  },
   uploadUrl: function() {
     var field = getFieldObject(this);
-    return field.uploadedFileUrl.get();
+    var data = field.uploadedFileUrl.get();
+    if (data) {
+      return data.dataUrl;
+    }
+    return null;
   },
   previewUrl: function() {
     var field = getFieldObject(this);
-    var url = field.uploadedFileUrl.get();
+    var data = field.uploadedFileUrl.get();
+    var url = null;
+
+    if (data) {
+      url = data.dataUrl;
+    }
+
     if (url && url.indexOf('data:image') === 0) {
       // If it's an image, display an image preview. Otherwise show a default file icon.
       return url;
-    } else {
-      return '';
     }
-    return url;
+
+    if (field.previewImageUrl) {
+      return field.previewImageUrl;
+    } else {
+      return '/packages/eeiswerth_formlicious/img/file-icon.png';
+    }
+  },
+  filename: function() {
+    var field = getFieldObject(this);
+    var data = field.uploadedFileUrl.get();
+    if (data) {
+      return data.name;
+    }
+    return null;
   }
 });
 
@@ -780,8 +812,12 @@ Template.formliciousFileUploadField.events({
     }
 
     var reader = new FileReader();
-    reader.onload = function(e) {
-      field.uploadedFileUrl.set(e.target.result);
+    reader.onload = function(evt) {
+      var data = {
+        dataUrl: evt.target.result,
+        name: FormliciousUtils.formatFilename(file.name, field.getWidth())
+      };
+      field.uploadedFileUrl.set(data);
     };
 
     reader.onabort = function() {
