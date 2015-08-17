@@ -18,7 +18,7 @@ package can be found here: [meteor-formlicious-demo] (https://github.com/eeiswer
 
 ### Configuration Options
 
-`fields`: Array - **required** The array of form element objects that controls what form elements are rendered. See below.
+`fields`: Array - (**required**) The array of form element objects that controls what form elements are rendered. See below.
 
 `buttons`: Array - (recommended) The array of button objects that allow you to handle use interaction with the form.
 
@@ -38,10 +38,10 @@ using the .formlicious-spinner CSS selector. For example, "/img/my-spinner.gif".
 #### Field
 Controls the form input elements that get rendered.
 
-`name`: String - **required** The name of the field. This will NOT be visible in the UI. This property is used for
+`name`: String - (**required**) The name of the field. This will NOT be visible in the UI. This property is used for
  binding a data object with a form element. See the example below for more details.
 
-`type`: String - **required** [input | textarea | date | credit-card | credit-card-expiration | checkbox | checkbox-group | radio | radio-group | dropzone]
+`type`: String - (**required**) [input | textarea | date | credit-card | credit-card-expiration | checkbox | checkbox-group | radio | radio-group | dropzone | file-upload]
 
 Type                   | Description
 ---------------------- | -----------------------------------------------------------------------------------
@@ -55,6 +55,7 @@ checkbox-group         | A stack of vertical checkboxes.
 radio                  | A single radio button with a label to the right of the radio button.
 radio-group            | A stack of vertical radio buttons.
 dropzone               | A Dropzone for file uploads. See [Dropzone](http://www.dropzonejs.com/). Jump to the [Dropzone Configuration](#dropzone-configuration) to learn more.
+file-upload            | A file chooser that supports file previews prior to being uploaded. Jump to the [File Upload Configuration](#file-upload-configuration) to learn more.
 
 For more detail on the types and what options affect their presentation and data binding. See below.
 
@@ -91,7 +92,7 @@ Formlicious provides some validators for your convenience. See below for more de
 
 Allows you to handle user interaction with the form.
 
-`text`: String - **required** The text that gets displayed on the button.
+`text`: String - (**required**) The text that gets displayed on the button.
 
 `callback`: Function - (recommended) The callback that gets called when this button is clicked. The callback has the following form:
 
@@ -119,6 +120,16 @@ function (api, valid, data) {
 **Note:** The default behavior is to NOT post the uploads to the server.  Instead it is recommended that you use something like [Slingshot](https://atmospherejs.com/edgee/slingshot) to upload the files to S3 or some other cloud provider.
 
 By default, the button callback will receive the files array in the data object for the dropzone fields.  You can use those file objects to handle the upload with Slinshot. An example will be provided via a wiki page shortly.
+
+#### File Upload Configuration
+
+`buttonText`: String - (**required**) The button text that will open the file chooser. For example, "Upload".
+ 
+`width`: Number - (**required**) This is the width of the preview image. The height of the image will be determined automatically. If you are allowing file types other that images, the preview image will be a generic file icon.
+
+`removeText`: String - (optional) Text to display when hovering over the remove button that gets overlayed on the file upload preview. This text will get put in the title attribute of the remove button.
+
+`accept`: String - (optional) What file types to accept on the server. Note, you must validate the types on the server as well.
 
 ### Validators
 
