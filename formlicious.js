@@ -1,10 +1,20 @@
 var _options;
 var _formId;
-var _vertical = true;
+var _vertical;
 var _api;
-var _fieldUtils = {};
-var _buttonUtils = {};
-var _spinner = new ReactiveVar(false);
+var _fieldUtils;
+var _buttonUtils;
+var _spinner;
+
+function reset() {
+    _options = null;
+    _formId = null;
+    _vertical = true;
+    _api = null;
+    _fieldUtils = {};
+    _buttonUtils = {};
+    _spinner = new ReactiveVar(false);
+}
 
 var FormliciousAPI = function(options, spinner, fields, buttons) {
     this.options = options;
@@ -296,7 +306,12 @@ var initCheckboxAndRadioGroupInputs = function(selector, parentSelector) {
     field.setData(data);
 };
 
+Template.formlicious.onDestroyed(function() {
+    reset();
+});
+
 Template.formlicious.onCreated(function() {
+    reset();
     if (!this.data.options) {
         return;
     }

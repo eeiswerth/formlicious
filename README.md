@@ -5,6 +5,8 @@
 Currently formlicious is no more than a prototype. I haven't written tests yet.  But a demo application that uses the
 package can be found here: [meteor-formlicious-demo] (https://github.com/eeiswerth/meteor-formlicious-demo)
 
+**Note** Only use one formlicious instance per page. It is designed such that your entire form should be able to fit within one formlicious instance.
+
 ### Table of Contents
 * [Configuration Options](#configuration-options)
   * [Field](#field)
