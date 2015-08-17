@@ -23,6 +23,7 @@ Package.onUse(function(api) {
       'formlicious.js',
       'formlicious.css',
       'img/loading.gif',
+      'img/file-icon.png',
       'lib/utils.js',
       'lib/exports.js'], 'client');
 
