@@ -365,9 +365,6 @@ Template.formlicious.onCreated(function() {
     _api = new FormliciousAPI(_options, _spinner, _fieldUtils, _buttonUtils);
 });
 
-Template.formlicious.onDestroyed(function() {
-});
-
 Template.formlicious.helpers({
     vertical: function() {
         return _vertical;
@@ -420,7 +417,10 @@ Template.formliciousFields.helpers({
         return this.type === 'dropzone';
     },
     fileUploadType: function() {
-      return this.type = 'file-upload';
+      return this.type === 'file-upload';
+    },
+    selectType: function() {
+        return this.type === 'select';
     }
 });
 
@@ -851,6 +851,64 @@ Template.formliciousFileUploadField.events({
     var field = getFieldObject(this);
     field.uploadedFileUrl.set(null);
   }
+});
+
+Template.formliciousSelectField.onRendered(function() {
+    var field = getFieldObject(this.data);
+    field.controlElement = $(this.find('select'));
+    field.getData = function() {
+        var val = this.controlElement.val();
+        return this.getValue(val);
+    };
+    field.setData = function(value) {
+        if (value == null) {
+            return;
+        }
+        field.controlElement.val(value);
+    };
+    field.reset = function() {
+        this.setData(field.values);
+    };
+    field.validate = function() {
+        return validateControl(this.controlElement, this);
+    };
+    field.disable = function() {
+        this.controlElement.prop("disabled", true);
+    };
+    field.enable = function() {
+        this.controlElement.prop("disabled", false);
+    };
+    /**
+     * Helper function to retrieve the true object corresponding to the given option/value.
+     * @param value
+     */
+    field.getValue = function(value) {
+        var result = null;
+        $.each(field.values, function(i, val) {
+            if (val.value === value) {
+                result = val;
+                return false; // Break from loop.
+            }
+        });
+        return result;
+    };
+    /**
+     * Helper function to retrieve the index of the given value in the given array of input values/options.
+     * @param value
+     */
+    field.getValueIndex = function(value) {
+        var index = -1;
+        $.each(field.values, function(i, val) {
+           if (val.value === value) {
+               index = i;
+               return false; // Break out of loop.
+           }
+        });
+        return index;
+    };
+
+    var data = getFieldData(this.data);
+    field.setData(data);
 });
 
 Template.formliciousButtons.helpers({

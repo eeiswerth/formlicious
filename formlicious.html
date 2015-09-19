@@ -35,14 +35,18 @@
 											{{else}}
 												{{#if radioGroupType}}
 													{{> formliciousRadioButtonGroupField}}
-                        {{else}}
-                          {{#if dropzoneType}}
-                            {{> formliciousDropzoneField}}
-                          {{else}}
-                            {{#if fileUploadType}}
-                              {{> formliciousFileUploadField}}
-                            {{/if}}
-                          {{/if}}
+												{{else}}
+												  	{{#if dropzoneType}}
+														{{> formliciousDropzoneField}}
+												  	{{else}}
+														{{#if fileUploadType}}
+													  		{{> formliciousFileUploadField}}
+														{{else}}
+															{{#if selectType}}
+																{{> formliciousSelectField}}
+															{{/if}}
+														{{/if}}
+												  	{{/if}}
 				 								{{/if}}
 											{{/if}}
 										{{/if}}
@@ -178,6 +182,21 @@
       <span class="glyphicon glyphicon-upload" aria-hidden="true"></span> {{buttonText}} <input type="file" accept="{{accept}}">
     </span>
   </div>
+</template>
+
+<template name="formliciousSelectField">
+	<label for="{{id}}" class="{{titleClasses}} control-label">{{title}}</label>
+	<div class="{{controlClasses}}">
+		<select class="form-control">
+			{{#each values}}
+				{{#if text}}
+					<option value="{{value}}">{{text}}</option>
+				{{else}}
+					<option value="{{value}}">{{value}}</option>
+				{{/if}}
+			{{/each}}
+		</select>
+	</div>
 </template>
 
 <template name="formliciousButtons">

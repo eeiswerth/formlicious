@@ -43,7 +43,7 @@ Controls the form input elements that get rendered.
 `name`: String - (**required**) The name of the field. This will NOT be visible in the UI. This property is used for
  binding a data object with a form element. See the example below for more details.
 
-`type`: String - (**required**) [input | textarea | date | credit-card | credit-card-expiration | checkbox | checkbox-group | radio | radio-group | dropzone | file-upload]
+`type`: String - (**required**) [input | textarea | date | credit-card | credit-card-expiration | checkbox | checkbox-group | radio | radio-group | dropzone | file-upload | select]
 
 Type                   | Description
 ---------------------- | -----------------------------------------------------------------------------------
@@ -58,6 +58,7 @@ radio                  | A single radio button with a label to the right of the 
 radio-group            | A stack of vertical radio buttons.
 dropzone               | A Dropzone for file uploads. See [Dropzone](http://www.dropzonejs.com/). Jump to the [Dropzone Configuration](#dropzone-configuration) to learn more.
 file-upload            | A file chooser that supports file previews prior to being uploaded. Jump to the [File Upload Configuration](#file-upload-configuration) to learn more.
+select				   | A select dropdown list. See the demo app for usage examples.
 
 For more detail on the types and what options affect their presentation and data binding. See below.
 
