@@ -899,7 +899,7 @@ Template.formliciousSelectField.onRendered(function() {
     field.getValueIndex = function(value) {
         var index = -1;
         $.each(field.values, function(i, val) {
-           if (val.value === value) {
+           if (val.value === value.value) {
                index = i;
                return false; // Break out of loop.
            }

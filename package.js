@@ -1,6 +1,6 @@
 Package.describe({
   name: 'eeiswerth:formlicious',
-  version: '0.0.11',
+  version: '0.0.12',
   // Brief, one-line summary of the package.
   summary: 'Simple Bootstrap forms for Meteor',
   // URL to the Git repository containing the source code for this package.
@@ -22,10 +22,13 @@ Package.onUse(function(api) {
       'formlicious.html',
       'formlicious.js',
       'formlicious.css',
-      'img/loading.gif',
-      'img/file-icon.png',
       'lib/utils.js',
       'lib/exports.js'], 'client');
+
+  api.addAssets([
+      'img/loading.gif',
+      'img/file-icon.png'
+  ], 'client');
 
   api.export('Formlicious');
 });
