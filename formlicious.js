@@ -240,8 +240,14 @@ var getButtonObject = function(button) {
 };
 
 var initCheckboxAndRadioInput = function() {
+    var self = this;
     var field = getFieldObject(this.data);
     field.controlElement = $(this.find('input'));
+    field.controlElement.on('click', function() {
+        if ($.isFunction(self.data.click)) {
+           self.data.click();
+        }
+    });
     field.getData = function() {
         return this.controlElement.prop("checked");
     };
