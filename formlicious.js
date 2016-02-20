@@ -110,7 +110,7 @@ var updateTextareaCounter = function(textareaElem) {
 };
 
 var getTitleClasses = function() {
-    var api = FormliciousUtils.getApi();
+    var api = FormliciousUtils.getApi.call(this);
     var classes = this.titleClasses;
     if (!api.vertical) {
         if (!classes) {
@@ -121,7 +121,7 @@ var getTitleClasses = function() {
 };
 
 var getControlClasses = function() {
-    var api = FormliciousUtils.getApi();
+    var api = FormliciousUtils.getApi.call(this);
     var classes = this.controlClasses;
     if (!api.vertical) {
         if (!classes) {
@@ -162,7 +162,7 @@ var validateControl = function(controlElement, field) {
 };
 
 var getFormData = function() {
-    var api = FormliciousUtils.getApi();
+    var api = FormliciousUtils.getApi.call(this);
     var data = {};
     $.each(api.fields, function(i, field) {
         if ($.isFunction(field.getData)) {
@@ -173,7 +173,7 @@ var getFormData = function() {
 };
 
 var getSubmitButton = function() {
-    var api = FormliciousUtils.getApi();
+    var api = FormliciousUtils.getApi.call(this);
     var button = null;
     $.each(api.options.buttons, function(i, b) {
         if (b.type === 'submit') {
@@ -185,7 +185,7 @@ var getSubmitButton = function() {
 };
 
 var handleButtonClick = function(button) {
-    var api = FormliciousUtils.getApi();
+    var api = FormliciousUtils.getApi.call(this);
     button = getButtonObject.call(this, button);
     if (!button.callback) {
         // Nothing to do.
@@ -204,7 +204,7 @@ var handleButtonClick = function(button) {
 };
 
 var getFieldData = function(field) {
-    var api = FormliciousUtils.getApi();
+    var api = FormliciousUtils.getApi.call(this);
     if (!api.options.data) {
         return null;
     }
@@ -212,7 +212,7 @@ var getFieldData = function(field) {
 };
 
 var getFieldObject = function(field) {
-    var api = FormliciousUtils.getApi();
+    var api = FormliciousUtils.getApi.call(this);
     var fieldObj = api.fields[field.name];
     if (!fieldObj) {
         fieldObj = _.clone(field);
@@ -222,7 +222,7 @@ var getFieldObject = function(field) {
 };
 
 var getButtonObject = function(button) {
-    var api = FormliciousUtils.getApi();
+    var api = FormliciousUtils.getApi.call(this);
     var buttonObj = api.buttons[button.text];
     if (!buttonObj) {
         buttonObj = _.clone(button);
@@ -354,18 +354,18 @@ Template.formlicious.onCreated(function() {
         }
     }
 
-    this.data.formlicious = {
+    this.view.formlicious = {
       _api: new FormliciousAPI(_options, isVertical)
     };
 });
 
 Template.formlicious.helpers({
     vertical: function() {
-        var api = FormliciousUtils.getApi();
+        var api = FormliciousUtils.getApi.call(this);
         return api.vertical;
     },
     formId: function() {
-        var api = FormliciousUtils.getApi();
+        var api = FormliciousUtils.getApi.call(this);
         return 'formliciousForm_' + api.formId;
     }
 });
@@ -917,7 +917,8 @@ Template.formliciousSelectField.onRendered(function() {
 
 Template.formliciousButtons.helpers({
     showSpinner: function() {
-        return this.formlicious._api.spinner.get();
+      var api = FormliciousUtils.getApi.call(this);
+      return api.spinner.get();
     }
 });
 
