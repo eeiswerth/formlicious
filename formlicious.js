@@ -1,26 +1,10 @@
-var _options;
-var _formId;
-var _vertical;
-var _api;
-var _fieldUtils;
-var _buttonUtils;
-var _spinner;
-
-function reset() {
-    _options = null;
-    _formId = null;
-    _vertical = true;
-    _api = null;
-    _fieldUtils = {};
-    _buttonUtils = {};
-    _spinner = new ReactiveVar(false);
-}
-
-var FormliciousAPI = function(options, spinner, fields, buttons) {
+var FormliciousAPI = function(options, vertical) {
     this.options = options;
-    this.spinner = spinner;
-    this.fields = fields;
-    this.buttons = buttons;
+    this.vertical = vertical;
+    this.formId = FormliciousUtils.getCount();
+    this.spinner = new ReactiveVar(false);
+    this.fields = {};
+    this.buttons = {};
 };
 
 FormliciousAPI.prototype._execFunc = function(func, buttonFunc) {
@@ -126,8 +110,9 @@ var updateTextareaCounter = function(textareaElem) {
 };
 
 var getTitleClasses = function() {
+    var api = FormliciousUtils.getApi();
     var classes = this.titleClasses;
-    if (!_vertical) {
+    if (!api.vertical) {
         if (!classes) {
             classes = 'col-sm-2';
         }
@@ -136,8 +121,9 @@ var getTitleClasses = function() {
 };
 
 var getControlClasses = function() {
+    var api = FormliciousUtils.getApi();
     var classes = this.controlClasses;
-    if (!_vertical) {
+    if (!api.vertical) {
         if (!classes) {
             classes = 'col-sm-10';
         }
@@ -146,7 +132,7 @@ var getControlClasses = function() {
 };
 
 var validateControl = function(controlElement, field) {
-    field = getFieldObject(field);
+    field = getFieldObject.call(this, field);
     var value = field.getData();
     if (field.validator != null && !$.isFunction(field.validator)) {
         throw new Error('Field validator must be a function.');
@@ -176,8 +162,9 @@ var validateControl = function(controlElement, field) {
 };
 
 var getFormData = function() {
+    var api = FormliciousUtils.getApi();
     var data = {};
-    $.each(_fieldUtils, function(i, field) {
+    $.each(api.fields, function(i, field) {
         if ($.isFunction(field.getData)) {
             data[field.name] = field.getData();
         }
@@ -186,8 +173,9 @@ var getFormData = function() {
 };
 
 var getSubmitButton = function() {
+    var api = FormliciousUtils.getApi();
     var button = null;
-    $.each(this.options.buttons, function(i, b) {
+    $.each(api.options.buttons, function(i, b) {
         if (b.type === 'submit') {
             button = b;
             return false; // break out of the loop.
@@ -197,55 +185,59 @@ var getSubmitButton = function() {
 };
 
 var handleButtonClick = function(button) {
-    button = getButtonObject(button);
+    var api = FormliciousUtils.getApi();
+    button = getButtonObject.call(this, button);
     if (!button.callback) {
         // Nothing to do.
         return;
     }
 
-    var result = _api.validate();
+    var result = api.validate();
     if (result && button.disableOnClick) {
-        _api.disable();
+        api.disable();
     }
-    if (result && button.type === 'submit' && _options.showSpinnerOnSubmit) {
-        _spinner.set(true);
+    if (result && button.type === 'submit' && api.options.showSpinnerOnSubmit) {
+        api.spinner.set(true);
     }
-    var data = getFormData();
-    button.callback(_api, result, data);
+    var data = getFormData.call(this);
+    button.callback(api, result, data);
 };
 
 var getFieldData = function(field) {
-    if (!_options.data) {
+    var api = FormliciousUtils.getApi();
+    if (!api.options.data) {
         return null;
     }
-    return _options.data[field.name];
+    return api.options.data[field.name];
 };
 
 var getFieldObject = function(field) {
-    var fieldObj = _fieldUtils[field.name];
+    var api = FormliciousUtils.getApi();
+    var fieldObj = api.fields[field.name];
     if (!fieldObj) {
         fieldObj = _.clone(field);
-        _fieldUtils[field.name] = fieldObj;
+        api.fields[field.name] = fieldObj;
     }
     return fieldObj;
 };
 
 var getButtonObject = function(button) {
-    var buttonObj = _buttonUtils[button.text];
+    var api = FormliciousUtils.getApi();
+    var buttonObj = api.buttons[button.text];
     if (!buttonObj) {
         buttonObj = _.clone(button);
-        _buttonUtils[button.text] = buttonObj;
+        api.buttons[button.text] = buttonObj;
     }
     return buttonObj;
 };
 
 var initCheckboxAndRadioInput = function() {
     var self = this;
-    var field = getFieldObject(this.data);
+    var field = getFieldObject.call(this, this.data);
     field.controlElement = $(this.find('input'));
-    field.controlElement.on('click', function() {
+    field.controlElement.on('click', function(e) {
         if ($.isFunction(self.data.click)) {
-           self.data.click();
+           self.data.click(e);
         }
     });
     field.getData = function() {
@@ -258,7 +250,7 @@ var initCheckboxAndRadioInput = function() {
         this.setData(false);
     };
     field.validate = function() {
-        return validateControl(this.controlElement, this);
+        return validateControl.call(self, this.controlElement, this);
     };
     field.disable = function() {
         this.controlElement.prop("disabled", true);
@@ -267,12 +259,13 @@ var initCheckboxAndRadioInput = function() {
         this.controlElement.prop("disabled", false);
     };
 
-    var data = getFieldData(this.data);
+    var data = getFieldData.call(this, this.data);
     field.setData(data);
 };
 
 var initCheckboxAndRadioGroupInputs = function(selector, parentSelector) {
-    var field = getFieldObject(this.data);
+    var self = this;
+    var field = getFieldObject.call(this, this.data);
     field.controlElement = $(this.find(parentSelector));
     field.getData = function() {
         var values = [];
@@ -294,7 +287,7 @@ var initCheckboxAndRadioGroupInputs = function(selector, parentSelector) {
         this.setData(null);
     };
     field.validate = function() {
-        return validateControl(this.controlElement, this);
+        return validateControl.call(self, this.controlElement, this);
     };
     field._toggleDisabled = function(disabled) {
         $.each(this.controlElement.find(selector + ' input'), function(i, checkboxElement) {
@@ -308,20 +301,15 @@ var initCheckboxAndRadioGroupInputs = function(selector, parentSelector) {
         this._toggleDisabled(false);
     };
 
-    var data = getFieldData(this.data);
+    var data = getFieldData.call(this, this.data);
     field.setData(data);
 };
 
-Template.formlicious.onDestroyed(function() {
-    reset();
-});
-
 Template.formlicious.onCreated(function() {
-    reset();
     if (!this.data.options) {
         return;
     }
-    _options = this.data.options;
+    var _options = this.data.options;
 
     if (!_options.fields) {
         return;
@@ -366,17 +354,19 @@ Template.formlicious.onCreated(function() {
         }
     }
 
-    _vertical = isVertical;
-    _formId = FormliciousUtils.getCount();
-    _api = new FormliciousAPI(_options, _spinner, _fieldUtils, _buttonUtils);
+    this.data.formlicious = {
+      _api: new FormliciousAPI(_options, isVertical)
+    };
 });
 
 Template.formlicious.helpers({
     vertical: function() {
-        return _vertical;
+        var api = FormliciousUtils.getApi();
+        return api.vertical;
     },
     formId: function() {
-        return 'formliciousForm_' + _formId;
+        var api = FormliciousUtils.getApi();
+        return 'formliciousForm_' + api.formId;
     }
 });
 
@@ -387,7 +377,7 @@ Template.formlicious.events({
         e.stopImmediatePropagation();
 
         var button = getSubmitButton.call(this);
-        handleButtonClick(button);
+        handleButtonClick.call(this, button);
     }
 });
 
@@ -431,7 +421,8 @@ Template.formliciousFields.helpers({
 });
 
 Template.formliciousInputField.onRendered(function() {
-    var field = getFieldObject(this.data);
+    var self = this;
+    var field = getFieldObject.call(this, this.data);
     field.controlElement = $(this.find('input'));
     field.getData = function() {
         return $.trim(this.controlElement.val());
@@ -443,7 +434,7 @@ Template.formliciousInputField.onRendered(function() {
         this.setData('');
     };
     field.validate = function() {
-        return validateControl(this.controlElement, this);
+        return validateControl.call(self, this.controlElement, this);
     };
     field.disable = function() {
         this.controlElement.prop("disabled", true);
@@ -452,7 +443,7 @@ Template.formliciousInputField.onRendered(function() {
         this.controlElement.prop("disabled", false);
     };
 
-    var data = getFieldData(this.data);
+    var data = getFieldData.call(this, this.data);
     field.setData(data);
 });
 
@@ -467,12 +458,13 @@ Template.formliciousInputField.helpers({
 
 Template.formliciousInputField.events({
     'input input': function(e, tmpl) {
-        validateControl($(e.currentTarget), this);
+        validateControl.call(this, $(e.currentTarget), this);
     }
 });
 
 Template.formliciousTextareaField.onRendered(function() {
-    var field = getFieldObject(this.data);
+    var self = this;
+    var field = getFieldObject(this, this.data);
     field.controlElement = $(this.find('textarea'));
     field.getData = function() {
         return $.trim(this.controlElement.val());
@@ -485,7 +477,7 @@ Template.formliciousTextareaField.onRendered(function() {
         this.setData('');
     };
     field.validate = function() {
-        return validateControl(this.controlElement, this);
+        return validateControl.call(self, this.controlElement, this);
     };
     field.disable = function() {
         this.controlElement.prop("disabled", true);
@@ -494,7 +486,7 @@ Template.formliciousTextareaField.onRendered(function() {
         this.controlElement.prop("disabled", false);
     };
 
-    var data = getFieldData(this.data);
+    var data = getFieldData.call(this, this.data);
     field.setData(data);
 });
 
@@ -510,12 +502,13 @@ Template.formliciousTextareaField.helpers({
 Template.formliciousTextareaField.events({
     'input textarea': function(e, tmpl) {
         updateTextareaCounter($(e.currentTarget));
-        validateControl($(e.currentTarget), this);
+        validateControl.call(this, $(e.currentTarget), this);
     }
 });
 
 Template.formliciousDateInputField.onRendered(function() {
-    var field = getFieldObject(this.data);
+    var self = this;
+    var field = getFieldObject.call(this, this.data);
     field.controlElement = $(this.find('.formlicious-date-input'));
     field.getData = function() {
         return this.controlElement.datepicker('getDate');
@@ -527,7 +520,7 @@ Template.formliciousDateInputField.onRendered(function() {
         this.setData(null);
     };
     field.validate = function() {
-        return validateControl(this.controlElement, this);
+        return validateControl.call(self, this.controlElement, this);
     };
     field.disable = function() {
         this.controlElement.prop("disabled", true);
@@ -541,18 +534,19 @@ Template.formliciousDateInputField.onRendered(function() {
         startView: 2
     });
 
-    var data = getFieldData(this.data);
+    var data = getFieldData.call(this, this.data);
     field.setData(data);
 });
 
 Template.formliciousDateInputField.events({
     'change input': function(e, tmpl) {
-        validateControl($(e.currentTarget), this);
+        validateControl.call(this, $(e.currentTarget), this);
     }
 });
 
 Template.formliciousCCInputField.onRendered(function() {
-    var field = getFieldObject(this.data);
+    var self = this;
+    var field = getFieldObject.call(this, this.data);
     field.controlElement = $(this.find('input'));
     field.getData = function() {
         return $.trim(this.controlElement.val());
@@ -564,7 +558,7 @@ Template.formliciousCCInputField.onRendered(function() {
         this.setData('');
     };
     field.validate = function() {
-        return validateControl(this.controlElement, this);
+        return validateControl.call(self, this.controlElement, this);
     };
     field.disable = function() {
         this.controlElement.prop("disabled", true);
@@ -573,18 +567,19 @@ Template.formliciousCCInputField.onRendered(function() {
         this.controlElement.prop("disabled", false);
     };
 
-    var data = getFieldData(this.data);
+    var data = getFieldData.call(this, this.data);
     field.setData(data);
 });
 
 Template.formliciousCCInputField.events({
     'input input': function(e, tmpl) {
-        validateControl($(e.currentTarget), this);
+        validateControl.call(this, $(e.currentTarget), this);
     }
 });
 
 Template.formliciousCCExpirationField.onRendered(function() {
-    var field = getFieldObject(this.data);
+    var self = this;
+    var field = getFieldObject.call(this, this.data);
     field.controlElement = $(this.find('.formlicious-cc-expiration'));
     field.getData = function() {
         var monthsSelectElement = this.controlElement.find('.formlicious-cc-months');
@@ -613,7 +608,7 @@ Template.formliciousCCExpirationField.onRendered(function() {
         this.setData({month: '', year: ''});
     };
     field.validate = function() {
-        return validateControl(this.controlElement.parent(), this);
+        return validateControl.call(self, this.controlElement.parent(), this);
     };
     field._toggleDisabled = function(disabled) {
         var monthsSelectElement = this.controlElement.find('.formlicious-cc-months');
@@ -628,7 +623,7 @@ Template.formliciousCCExpirationField.onRendered(function() {
         this._toggleDisabled(false);
     };
 
-    var data = getFieldData(this.data);
+    var data = getFieldData.call(this, this.data);
     field.setData(data);
 });
 
@@ -658,10 +653,10 @@ Template.formliciousCCExpirationField.helpers({
 
 Template.formliciousCCExpirationField.events({
     'change select.formlicious-cc-months': function(e, tmpl) {
-        validateControl($(e.currentTarget).parent(), this);
+        validateControl.call(this, $(e.currentTarget).parent(), this);
     },
     'change select.formlicious-cc-years': function(e, tmpl) {
-        validateControl($(e.currentTarget).parent(), this);
+        validateControl.call(this, $(e.currentTarget).parent(), this);
     }
 });
 
@@ -682,6 +677,7 @@ Template.formliciousRadioButtonGroupField.onRendered(function() {
 });
 
 Template.formliciousDropzoneField.onRendered(function() {
+  var self = this;
   var dropzoneOptions = {
     url: '/dummy',
     id: this.data.id
@@ -695,7 +691,7 @@ Template.formliciousDropzoneField.onRendered(function() {
   var dropzone = new Dropzone('.dropzone', dropzoneOptions);
   dropzone.uploadFiles = DropzoneUtils.uploadFiles;
 
-  var field = getFieldObject(this.data);
+  var field = getFieldObject.call(this, this.data);
   field.dropzone = dropzone;
   field.controlElement = $(dropzone.element);
   field.getData = function () {
@@ -708,7 +704,7 @@ Template.formliciousDropzoneField.onRendered(function() {
     this.dropzone.removeAllFiles();
   };
   field.validate = function () {
-    return validateControl(this.controlElement, this);
+    return validateControl.call(self, this.controlElement, this);
   };
   field.disable = function () {
     this.controlElement.prop("disabled", true);
@@ -719,12 +715,13 @@ Template.formliciousDropzoneField.onRendered(function() {
 });
 
 Template.formliciousFileUploadField.onCreated(function() {
-  var field = getFieldObject(this.data);
+  var field = getFieldObject.call(this, this.data);
   field.uploadedFileUrl = new ReactiveVar(null);
 });
 
 Template.formliciousFileUploadField.onRendered(function() {
-  var field = getFieldObject(this.data);
+  var self = this;
+  var field = getFieldObject.call(this, this.data);
   field.controlElement = $(this.find('.file-upload-button'));
   field.getData = function() {
     return this.uploadedFileUrl.get();
@@ -736,7 +733,7 @@ Template.formliciousFileUploadField.onRendered(function() {
     this.setData(null);
   };
   field.validate = function() {
-    return validateControl(this.controlElement, this);
+    return validateControl.call(self, this.controlElement, this);
   };
   field.disable = function() {
     this.controlElement.find('input').prop("disabled", true);
@@ -752,17 +749,17 @@ Template.formliciousFileUploadField.onRendered(function() {
     return width;
   };
 
-  var data = getFieldData(this.data);
+  var data = getFieldData.call(this, this.data);
   field.setData(data);
 });
 
 Template.formliciousFileUploadField.helpers({
   width: function() {
-    var field = getFieldObject(this);
+    var field = getFieldObject.call(this, this);
     return field.getWidth();
   },
   uploadUrl: function() {
-    var field = getFieldObject(this);
+    var field = getFieldObject.call(this, this);
     var data = field.uploadedFileUrl.get();
     if (data) {
       return data.dataUrl;
@@ -770,7 +767,7 @@ Template.formliciousFileUploadField.helpers({
     return null;
   },
   previewUrl: function() {
-    var field = getFieldObject(this);
+    var field = getFieldObject.call(this, this);
     var data = field.uploadedFileUrl.get();
     var url = null;
 
@@ -790,7 +787,7 @@ Template.formliciousFileUploadField.helpers({
     }
   },
   filename: function() {
-    var field = getFieldObject(this);
+    var field = getFieldObject.call(this, this);
     var data = field.uploadedFileUrl.get();
     if (data) {
       return data.name;
@@ -805,7 +802,7 @@ Template.formliciousFileUploadField.events({
     input.value = null;
   },
   'change input[type=file]': function(e, tmpl) {
-    var field = getFieldObject(this);
+    var field = getFieldObject.call(this, this);
     var type = null;
     var input = tmpl.find('input[type=file]');
     var files = input.files;
@@ -854,13 +851,14 @@ Template.formliciousFileUploadField.events({
     reader.readAsDataURL(file);
   },
   'click .file-upload-actions button': function(e, tmpl) {
-    var field = getFieldObject(this);
+    var field = getFieldObject.call(this, this);
     field.uploadedFileUrl.set(null);
   }
 });
 
 Template.formliciousSelectField.onRendered(function() {
-    var field = getFieldObject(this.data);
+    var self = this;
+    var field = getFieldObject.call(this, this.data);
     field.controlElement = $(this.find('select'));
     field.getData = function() {
         var val = this.controlElement.val();
@@ -876,7 +874,7 @@ Template.formliciousSelectField.onRendered(function() {
         this.setData(field.values);
     };
     field.validate = function() {
-        return validateControl(this.controlElement, this);
+        return validateControl.call(self, this.controlElement, this);
     };
     field.disable = function() {
         this.controlElement.prop("disabled", true);
@@ -913,18 +911,18 @@ Template.formliciousSelectField.onRendered(function() {
         return index;
     };
 
-    var data = getFieldData(this.data);
+    var data = getFieldData.call(this, this.data);
     field.setData(data);
 });
 
 Template.formliciousButtons.helpers({
     showSpinner: function() {
-        return _spinner.get();
+        return this.formlicious._api.spinner.get();
     }
 });
 
 Template.formliciousButton.onRendered(function() {
-    var button = getButtonObject(this.data);
+    var button = getButtonObject.call(this, this.data);
     button.controlElement =  $(this.find('button'));
     button.disable = function() {
         this.controlElement.prop("disabled", true);
@@ -950,7 +948,7 @@ Template.formliciousButton.events({
            // Nothing to do.
            return;
        }
-       handleButtonClick(this);
+       handleButtonClick.call(this, this);
    }
 });
 
