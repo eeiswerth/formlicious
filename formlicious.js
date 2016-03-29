@@ -464,7 +464,7 @@ Template.formliciousInputField.events({
 
 Template.formliciousTextareaField.onRendered(function() {
     var self = this;
-    var field = getFieldObject(this, this.data);
+    var field = getFieldObject.call(this, this.data);
     field.controlElement = $(this.find('textarea'));
     field.getData = function() {
         return $.trim(this.controlElement.val());
